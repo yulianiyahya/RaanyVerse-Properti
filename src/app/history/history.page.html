@@ -1,0 +1,67 @@
+<ion-content class="history-content">
+
+  <!-- Header -->
+  <div class="history-header">
+    <div class="back-btn" (click)="goBack()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span>Kembali</span>
+    </div>
+    <span class="header-title">Riwayat Aktivitas</span>
+    <div class="header-placeholder"></div>
+  </div>
+
+  <!-- Filter Tab -->
+  <div class="filter-tab">
+    <span class="tab-item" [class.active]="filterAktif === 'semua'" (click)="filterAktif = 'semua'">Semua</span>
+    <span class="tab-item" [class.active]="filterAktif === 'pembayaran'" (click)="filterAktif = 'pembayaran'">Pembayaran</span>
+    <span class="tab-item" [class.active]="filterAktif === 'complaint'" (click)="filterAktif = 'complaint'">Complaint</span>
+    <span class="tab-item" [class.active]="filterAktif === 'maintenance'" (click)="filterAktif = 'maintenance'">Maintenance</span>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="getFilteredHistory().length === 0">
+    <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#C4B8AE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <polyline points="12 6 12 12 16 14"></polyline>
+    </svg>
+    <h3>Belum Ada Riwayat</h3>
+    <p>Aktivitas kamu akan muncul di sini setelah kamu melakukan transaksi atau pengajuan.</p>
+  </div>
+
+  <!-- History List -->
+  <div class="history-list" *ngIf="getFilteredHistory().length > 0">
+    <div class="history-item" *ngFor="let item of getFilteredHistory()">
+      <div class="history-icon" [ngClass]="item.tipe">
+        <!-- Pembayaran -->
+        <svg *ngIf="item.tipe === 'pembayaran'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+        <!-- Complaint -->
+        <svg *ngIf="item.tipe === 'complaint'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <!-- Maintenance -->
+        <svg *ngIf="item.tipe === 'maintenance'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+        </svg>
+      </div>
+      <div class="history-info">
+        <div class="history-top">
+          <p class="history-title">{{ item.judul }}</p>
+          <span class="badge-status" [ngClass]="item.status">{{ item.statusLabel }}</span>
+        </div>
+        <p class="history-desc">{{ item.deskripsi }}</p>
+        <div class="history-footer">
+          <span class="history-kategori">{{ item.kategoriLabel }}</span>
+          <span class="history-time">{{ item.waktu }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height: 32px;"></div>
+
+</ion-content>

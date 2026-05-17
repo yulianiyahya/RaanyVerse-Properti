@@ -1,0 +1,141 @@
+.login-content {
+  --background: #FAF8F5;
+}
+
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 28px;
+}
+
+/* Logo Section */
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+
+  .logo-box {
+    width: 80px;
+    height: 80px;
+    background: #2C1A0E;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 24px rgba(44, 26, 14, 0.25);
+  }
+
+  .app-name {
+    font-size: 26px;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    color: #2C1A0E;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+
+  .app-tagline {
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: #9E8878;
+    margin: 4px 0 0;
+    letter-spacing: 0.5px;
+  }
+}
+
+/* Form Section */
+.form-section {
+  width: 100%;
+  max-width: 340px;
+
+  .input-group {
+    margin-bottom: 18px;
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2C1A0E;
+      margin-bottom: 8px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #E0D8D0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      gap: 10px;
+
+      ion-icon {
+        font-size: 18px;
+        color: #9E8878;
+        flex-shrink: 0;
+      }
+
+      input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 14px;
+        color: #2C1A0E;
+        font-family: 'DM Sans', sans-serif;
+
+        &::placeholder {
+          color: #C4B8AE;
+        }
+      }
+
+      .toggle-password {
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .forgot-password {
+    text-align: right;
+    margin-bottom: 24px;
+
+    a {
+      font-size: 13px;
+      color: #C0622A;
+      text-decoration: none;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+    }
+  }
+
+  .btn-masuk {
+    width: 100%;
+    padding: 15px;
+    background: #C0622A;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s ease, transform 0.1s ease;
+
+    &:active {
+      background: #A0521F;
+      transform: scale(0.98);
+    }
+  }
+
+  .version {
+    text-align: center;
+    font-size: 12px;
+    color: #C4B8AE;
+    margin-top: 24px;
+    font-family: 'DM Sans', sans-serif;
+  }
+}

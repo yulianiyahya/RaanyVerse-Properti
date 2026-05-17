@@ -1,0 +1,98 @@
+<ion-content class="profil-content">
+
+  <!-- Header -->
+  <div class="profil-header">
+    <div class="back-btn" (click)="goBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      <span>Kembali</span>
+    </div>
+    <span class="header-title">Profil Saya</span>
+    <div class="save-btn" (click)="simpan()">
+      <span>Simpan</span>
+    </div>
+  </div>
+
+  <!-- Avatar Section -->
+  <div class="avatar-section">
+    <div class="avatar-wrapper">
+      <div class="avatar-circle">
+        <img *ngIf="fotoUrl" [src]="fotoUrl" alt="foto profil" />
+        <ion-icon *ngIf="!fotoUrl" name="person-outline"></ion-icon>
+      </div>
+      <div class="avatar-edit" (click)="gantiFoto()">
+        <ion-icon name="camera-outline"></ion-icon>
+      </div>
+    </div>
+    <h2 class="avatar-name">{{ namaUser }}</h2>
+    <p class="avatar-email">{{ emailUser }}</p>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section">
+
+    <div class="form-group">
+      <label>Nama Lengkap</label>
+      <div class="input-wrapper">
+        <ion-icon name="person-outline"></ion-icon>
+        <input type="text" [(ngModel)]="nama" placeholder="Masukkan nama lengkap" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <div class="input-wrapper disabled">
+        <ion-icon name="mail-outline"></ion-icon>
+        <input type="email" [(ngModel)]="email" placeholder="Email" [disabled]="true" />
+      </div>
+      <span class="hint">Email tidak dapat diubah</span>
+    </div>
+
+    <div class="form-group">
+      <label>Nomor HP</label>
+      <div class="input-wrapper">
+        <ion-icon name="call-outline"></ion-icon>
+        <input type="tel" [(ngModel)]="noHp" placeholder="08xxxxxxxxxx" />
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="section-label">GANTI PASSWORD</p>
+
+    <div class="form-group">
+      <label>Password Lama</label>
+      <div class="input-wrapper">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <input [type]="showOld ? 'text' : 'password'" [(ngModel)]="passwordLama" placeholder="••••••••" />
+        <ion-icon [name]="showOld ? 'eye-off-outline' : 'eye-outline'" class="toggle" (click)="showOld = !showOld"></ion-icon>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Password Baru</label>
+      <div class="input-wrapper">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <input [type]="showNew ? 'text' : 'password'" [(ngModel)]="passwordBaru" placeholder="••••••••" />
+        <ion-icon [name]="showNew ? 'eye-off-outline' : 'eye-outline'" class="toggle" (click)="showNew = !showNew"></ion-icon>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Konfirmasi Password Baru</label>
+      <div class="input-wrapper">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <input [type]="showConfirm ? 'text' : 'password'" [(ngModel)]="passwordConfirm" placeholder="••••••••" />
+        <ion-icon [name]="showConfirm ? 'eye-off-outline' : 'eye-outline'" class="toggle" (click)="showConfirm = !showConfirm"></ion-icon>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="btn-logout" (click)="logout()">
+      <ion-icon name="log-out-outline"></ion-icon>
+      <span>Keluar dari Akun</span>
+    </button>
+
+  </div>
+
+</ion-content>

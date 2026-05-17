@@ -1,0 +1,133 @@
+<ion-content class="unit-content">
+
+  <!-- Header -->
+  <div class="unit-header">
+    <div class="header-left">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+      <span class="header-title">Unit Tersedia</span>
+    </div>
+    <div class="header-right">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9E8878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        placeholder="Cari unit atau lokasi..."
+      />
+    </div>
+  </div>
+
+  <!-- Filter Tab -->
+  <div class="filter-scroll">
+    <div
+      class="filter-chip"
+      *ngFor="let f of filterList"
+      [class.active]="filterAktif === f.value"
+      (click)="filterAktif = f.value"
+    >
+      {{ f.label }}
+    </div>
+  </div>
+
+  <!-- Unit List -->
+  <div class="unit-list">
+    <div class="unit-card" *ngFor="let unit of getFilteredUnit()">
+
+      <!-- Gambar -->
+      <div class="unit-img-wrap">
+        <img [src]="unit.gambar" [alt]="unit.nama" class="unit-img" />
+        <span class="badge-tersedia">
+          <span class="dot"></span> Tersedia
+        </span>
+      </div>
+
+      <!-- Info -->
+      <div class="unit-info">
+        <div class="unit-info-top">
+          <h3 class="unit-nama">{{ unit.nama }}</h3>
+          <div class="unit-rating">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="#F9A825" stroke="#F9A825" stroke-width="1">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span>{{ unit.rating }}</span>
+          </div>
+        </div>
+
+        <div class="unit-lokasi">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9E8878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span>{{ unit.lokasi }}</span>
+        </div>
+
+        <div class="unit-footer">
+          <div class="unit-harga">
+            <p class="harga-label">HARGA PER BULAN</p>
+            <p class="harga-value">Rp {{ unit.harga | number:'1.0-0' }}</p>
+          </div>
+          <button class="btn-detail" (click)="lihatDetail(unit)">
+            Lihat Detail →
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty -->
+    <div class="empty-search" *ngIf="getFilteredUnit().length === 0">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#C4B8AE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <p>Tidak ada unit yang ditemukan</p>
+    </div>
+  </div>
+
+  <div style="height: 100px;"></div>
+
+</ion-content>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+  <div class="nav-item" (click)="goToBeranda()">
+    <div class="nav-icon-wrap">
+      <ion-icon name="home-outline"></ion-icon>
+    </div>
+    <span>Beranda</span>
+  </div>
+  <div class="nav-item active">
+    <div class="nav-icon-wrap active">
+      <ion-icon name="business-outline"></ion-icon>
+    </div>
+    <span>Unit</span>
+  </div>
+  <div class="nav-item" (click)="goToPesanan()">
+    <div class="nav-icon-wrap">
+      <ion-icon name="receipt-outline"></ion-icon>
+    </div>
+    <span>Pesanan</span>
+  </div>
+  <div class="nav-item" (click)="goToProfil()">
+    <div class="nav-icon-wrap">
+      <ion-icon name="person-outline"></ion-icon>
+    </div>
+    <span>Profil</span>
+  </div>
+</div>

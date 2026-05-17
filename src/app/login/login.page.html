@@ -1,0 +1,46 @@
+<ion-content class="login-content">
+  <div class="login-wrapper">
+
+    <!-- Logo -->
+    <div class="logo-section">
+      <div class="logo-box"></div>
+      <h1 class="app-name">RaanyProp</h1>
+      <p class="app-tagline">by RaanyVerse</p>
+    </div>
+
+    <!-- Form -->
+    <div class="form-section">
+      <div class="input-group">
+        <label>Email</label>
+        <div class="input-wrapper">
+          <ion-icon name="mail-outline"></ion-icon>
+          <input type="email" placeholder="nama@email.com" [(ngModel)]="email" />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Kata Sandi</label>
+        <div class="input-wrapper">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <input [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" [(ngModel)]="password" />
+          <ion-icon 
+            [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" 
+            class="toggle-password"
+            (click)="togglePassword()">
+          </ion-icon>
+        </div>
+      </div>
+
+      <div class="forgot-password">
+        <a href="#">Lupa Kata Sandi?</a>
+      </div>
+
+      <button class="btn-masuk" (click)="login()">Masuk</button>
+
+      <p class="register-link">Belum punya akun? <a (click)="goToRegister()">Daftar</a></p>
+
+      <p class="version">v1.0 · RaanyVerse</p>
+    </div>
+
+  </div>
+</ion-content>

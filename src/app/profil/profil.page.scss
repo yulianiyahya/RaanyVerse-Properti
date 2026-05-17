@@ -1,0 +1,232 @@
+.profil-content {
+  --background: #FAF8F5;
+}
+
+/* Header */
+.profil-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #2C1A0E;
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+
+    ion-icon {
+      font-size: 20px;
+      color: #FFFFFF;
+    }
+
+    span {
+      font-size: 13px;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+  }
+
+  .header-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  .save-btn {
+    padding: 6px 14px;
+    background: #C0622A;
+    border-radius: 8px;
+    cursor: pointer;
+
+    span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+  }
+}
+
+/* Avatar */
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 20px 24px;
+  background: #2C1A0E;
+
+  .avatar-wrapper {
+    position: relative;
+    margin-bottom: 14px;
+
+    .avatar-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 3px solid #C0622A;
+
+      ion-icon {
+        font-size: 44px;
+        color: rgba(255,255,255,0.6);
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .avatar-edit {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 28px;
+      height: 28px;
+      background: #C0622A;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px solid #2C1A0E;
+
+      ion-icon {
+        font-size: 14px;
+        color: white;
+      }
+    }
+  }
+
+  .avatar-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0 0 4px;
+  }
+
+  .avatar-email {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin: 0;
+  }
+}
+
+/* Form */
+.form-section {
+  padding: 24px 20px;
+
+  .form-group {
+    margin-bottom: 18px;
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #2C1A0E;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #E0D8D0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      gap: 10px;
+      transition: border-color 0.2s ease;
+
+      &:focus-within {
+        border-color: #C0622A;
+      }
+
+      &.disabled {
+        background: #F0EDE8;
+        border-color: #E0D8D0;
+      }
+
+      ion-icon {
+        font-size: 18px;
+        color: #9E8878;
+        flex-shrink: 0;
+      }
+
+      input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 14px;
+        color: #2C1A0E;
+
+        &::placeholder {
+          color: #C4B8AE;
+        }
+
+        &:disabled {
+          color: #9E8878;
+        }
+      }
+
+      .toggle {
+        cursor: pointer;
+        flex-shrink: 0;
+        color: #9E8878;
+      }
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #C4B8AE;
+      margin-top: 5px;
+      display: block;
+    }
+  }
+
+  .divider {
+    height: 1px;
+    background: #E0D8D0;
+    margin: 20px 0;
+  }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #2C1A0E;
+    letter-spacing: 1px;
+    margin: 0 0 16px;
+  }
+
+  .btn-logout {
+    width: 100%;
+    padding: 14px;
+    background: #FFF0F0;
+    border: 1.5px solid #FF6B6B;
+    border-radius: 12px;
+    color: #FF6B6B;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+
+    ion-icon {
+      font-size: 18px;
+    }
+
+    &:active {
+      background: #FFE0E0;
+    }
+  }
+}
