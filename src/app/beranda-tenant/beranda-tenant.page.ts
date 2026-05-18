@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule],
 })
-export class BerandaTenantPage implements OnInit {
+export class BerandaTenantPage {
   namaUser: string = '';
   sapaan: string = '';
   unitData: any = null;
@@ -21,7 +21,18 @@ export class BerandaTenantPage implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    const nama = localStorage.getItem('namaUser') || 'Pengguna';
+    this.loadData();
+  }
+
+  ionViewWillEnter() {
+    this.loadData();
+  }
+
+  loadData() {
+    let nama = localStorage.getItem('namaUser');
+    if (!nama || nama === 'undefined' || nama === 'null') {
+      nama = 'Pengguna';
+    }
     this.namaUser = nama.charAt(0).toUpperCase() + nama.slice(1);
 
     const jam = new Date().getHours();

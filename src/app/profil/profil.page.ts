@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -25,9 +25,17 @@ export class ProfilPage implements OnInit {
   showNew: boolean = false;
   showConfirm: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.loadProfil();
+  }
+
+  ionViewWillEnter() {
+    this.loadProfil();
+  }
+
+  loadProfil() {
     const emailLogin = localStorage.getItem('emailUser') || '';
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const user = users.find((u: any) => u.email === emailLogin);
@@ -51,6 +59,7 @@ export class ProfilPage implements OnInit {
       const reader = new FileReader();
       reader.onload = (ev: any) => {
         this.fotoUrl = ev.target.result;
+        this.cdr.detectChanges();
       };
       reader.readAsDataURL(file);
     };

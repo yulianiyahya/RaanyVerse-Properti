@@ -21,10 +21,10 @@
   .logo-box {
     width: 72px;
     height: 72px;
-    background: #2C1A0E;
     border-radius: 20px;
     margin-bottom: 14px;
     box-shadow: 0 8px 24px rgba(44, 26, 14, 0.25);
+    object-fit: cover;
   }
 
   .app-name {
