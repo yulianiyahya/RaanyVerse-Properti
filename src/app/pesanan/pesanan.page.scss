@@ -1,12 +1,28 @@
 .pesanan-content {
   --background: #FAF8F5;
+  --padding-top: 0px;
+}
+
+.pesanan-content::part(scroll) {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+ion-header {
+  background: #2C1A0E;
+
+  &::after {
+    display: none;
+  }
 }
 
 .pesanan-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: 12px 20px;
+  padding-top: calc(12px + var(--ion-safe-area-top, 0px));
   background: #2C1A0E;
 
   .header-title {
@@ -55,11 +71,21 @@
   gap: 16px;
 }
 
+.empty-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100% - 60px);
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 20px 40px;
+  justify-content: center;
+  text-align: center;
+  padding: 0 20px;
   gap: 10px;
 
   .empty-title {
@@ -96,7 +122,6 @@
   overflow: hidden;
   box-shadow: 0 4px 14px rgba(44, 26, 14, 0.08);
   display: flex;
-  gap: 0;
 
   .card-left {
     width: 110px;
@@ -207,19 +232,19 @@
   }
 }
 
+ion-footer::before {
+  display: none;
+}
+
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 72px;
+  height: 64px;
   background: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: space-around;
   box-shadow: 0 -4px 16px rgba(44, 26, 14, 0.1);
-  z-index: 100;
   border-radius: 20px 20px 0 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 
   .nav-item {
     display: flex;

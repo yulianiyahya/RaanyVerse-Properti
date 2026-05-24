@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 export class UnitPage implements OnInit {
   searchQuery: string = '';
   filterAktif: string = 'semua';
+  menuOpen: boolean = false;
 
   filterList = [
     { value: 'semua', label: 'Semua' },
@@ -80,6 +81,16 @@ export class UnitPage implements OnInit {
 
   ngOnInit() {}
 
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  logout() {
+    this.menuOpen = false;
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+
   getFilteredUnit() {
     return this.daftarUnit.filter(u => {
       const matchFilter =
@@ -102,4 +113,5 @@ export class UnitPage implements OnInit {
   goToUnit() { this.router.navigate(['/unit']); }
   goToPesanan() { this.router.navigate(['/pesanan']); }
   goToProfil() { this.router.navigate(['/profil']); }
+  goToNotifikasi() { this.router.navigate(['/notifikasi']); }
 }

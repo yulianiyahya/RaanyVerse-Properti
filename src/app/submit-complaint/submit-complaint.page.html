@@ -1,6 +1,4 @@
-<ion-content class="complaint-content">
-
-  <!-- Header -->
+<ion-header class="ion-no-border">
   <div class="complaint-header">
     <div class="back-btn" (click)="goBack()">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -11,15 +9,20 @@
     <span class="header-title">Submit Complaint</span>
     <div class="header-placeholder"></div>
   </div>
+</ion-header>
 
-  <!-- Belum punya unit -->
-  <div class="empty-unit-state" *ngIf="!punyaUnit">
-    <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#C4B8AE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-    </svg>
-    <h3>Belum Ada Unit</h3>
-    <p>Kamu belum memiliki unit hunian. Fitur ini tersedia setelah kamu mendapatkan unit dari admin.</p>
-    <button class="btn-kembali" (click)="goBack()">Kembali ke Beranda</button>
+<ion-content class="complaint-content">
+
+  <!-- FIX: wrapper full-height agar empty state bisa di-center -->
+  <div class="empty-wrapper" *ngIf="!punyaUnit">
+    <div class="empty-unit-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#C4B8AE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <h3>Belum Ada Unit</h3>
+      <p>Kamu belum memiliki unit hunian. Fitur ini tersedia setelah kamu mendapatkan unit dari admin.</p>
+      <button class="btn-kembali" (click)="goBack()">Kembali ke Beranda</button>
+    </div>
   </div>
 
   <!-- Sudah punya unit -->
@@ -42,7 +45,7 @@
             <option value="kebersihan">Kebersihan</option>
             <option value="keamanan">Keamanan</option>
             <option value="fasilitas">Fasilitas Umum</option>
-            <option value="listrik">Listrik & Air</option>
+            <option value="listrik">Listrik &amp; Air</option>
             <option value="bangunan">Kerusakan Bangunan</option>
             <option value="lainnya">Lainnya</option>
           </select>

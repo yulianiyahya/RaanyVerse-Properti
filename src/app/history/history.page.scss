@@ -1,12 +1,28 @@
 .history-content {
   --background: #FAF8F5;
+  --padding-bottom: 32px;
+}
+
+.history-content::part(scroll) {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+ion-header {
+  background: #2C1A0E;
+
+  &::after {
+    display: none;
+  }
 }
 
 .history-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: 12px 20px;
+  padding-top: calc(12px + var(--ion-safe-area-top, 0px));
   background: #2C1A0E;
 
   .back-btn {
@@ -39,9 +55,7 @@
   border-bottom: 1px solid #E0D8D0;
   overflow-x: auto;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  &::-webkit-scrollbar { display: none; }
 
   .tab-item {
     flex-shrink: 0;
@@ -62,13 +76,21 @@
   }
 }
 
+.empty-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100% - 45px);
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 32px;
   text-align: center;
+  padding: 0 32px;
   gap: 12px;
 
   h3 {
@@ -110,20 +132,9 @@
       justify-content: center;
       flex-shrink: 0;
 
-      &.pembayaran {
-        background: #E8F5E9;
-        color: #4CAF50;
-      }
-
-      &.complaint {
-        background: #FFF3E0;
-        color: #C0622A;
-      }
-
-      &.maintenance {
-        background: #E3F2FD;
-        color: #1976D2;
-      }
+      &.pembayaran { background: #E8F5E9; color: #4CAF50; }
+      &.complaint { background: #FFF3E0; color: #C0622A; }
+      &.maintenance { background: #E3F2FD; color: #1976D2; }
     }
 
     .history-info {
@@ -152,20 +163,9 @@
           border-radius: 20px;
           flex-shrink: 0;
 
-          &.lunas, &.selesai {
-            background: #E8F5E9;
-            color: #4CAF50;
-          }
-
-          &.proses, &.belum, &.menunggu {
-            background: #FFF3E0;
-            color: #C0622A;
-          }
-
-          &.ditolak {
-            background: #FFEBEE;
-            color: #FF6B6B;
-          }
+          &.lunas, &.selesai { background: #E8F5E9; color: #4CAF50; }
+          &.proses, &.belum, &.menunggu { background: #FFF3E0; color: #C0622A; }
+          &.ditolak { background: #FFEBEE; color: #FF6B6B; }
         }
       }
 

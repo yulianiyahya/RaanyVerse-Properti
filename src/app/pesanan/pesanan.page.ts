@@ -56,4 +56,5 @@ export class PesananPage implements OnInit {
   goToUnit() { this.router.navigate(['/unit']); }
   goToPesanan() { this.router.navigate(['/pesanan']); }
   goToProfil() { this.router.navigate(['/profil']); }
+  goToNotifikasi() { this.router.navigate(['/notifikasi']); }
 }

@@ -1,27 +1,28 @@
 .home-content {
   --background: #FAF8F5;
-  position: relative;
 }
 
-/* Header */
+ion-header {
+  background: #2C1A0E;
+  position: relative;
+
+  &::after {
+    display: none;
+  }
+}
+
 .top-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: 12px 20px;
+  padding-top: calc(12px + var(--ion-safe-area-top, 0px));
   background: #2C1A0E;
 
   .header-left {
     display: flex;
     align-items: center;
     gap: 8px;
-
-    .brand-icon {
-      width: 28px;
-      height: 28px;
-      background: #C0622A;
-      border-radius: 8px;
-    }
 
     .brand-name {
       font-size: 16px;
@@ -40,18 +41,13 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-
-      &.menu-icon {
-        cursor: pointer;
-      }
     }
   }
 }
 
-/* Dropdown */
 .dropdown-menu {
   position: absolute;
-  top: 60px;
+  top: 100%;
   right: 16px;
   background: #FFFFFF;
   border-radius: 12px;
@@ -89,7 +85,6 @@
   }
 }
 
-/* Greeting */
 .greeting-section {
   padding: 24px 20px 12px;
 
@@ -107,7 +102,6 @@
   }
 }
 
-/* Unit Card */
 .unit-card {
   margin: 8px 20px 20px;
   background: #2C1A0E;
@@ -193,7 +187,6 @@
   }
 }
 
-/* Empty Unit */
 .empty-unit {
   margin: 8px 20px 20px;
   border: 2px dashed #E0D8D0;
@@ -226,7 +219,6 @@
   }
 }
 
-/* Section */
 .section {
   padding: 0 20px 20px;
 
@@ -254,7 +246,6 @@
   }
 }
 
-/* Aksi Cepat */
 .aksi-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -299,7 +290,6 @@
   }
 }
 
-/* Aktivitas */
 .aktivitas-list {
   display: flex;
   flex-direction: column;
@@ -359,7 +349,6 @@
   }
 }
 
-/* Empty Aktivitas */
 .empty-aktivitas {
   display: flex;
   flex-direction: column;
@@ -382,20 +371,23 @@
   }
 }
 
-/* Bottom Navigation */
+ion-footer {
+  background: transparent;
+
+  &::before {
+    display: none;
+  }
+}
+
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 72px;
+  height: 64px;
   background: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: space-around;
   box-shadow: 0 -4px 16px rgba(44, 26, 14, 0.1);
-  z-index: 100;
   border-radius: 20px 20px 0 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 
   .nav-item {
     display: flex;

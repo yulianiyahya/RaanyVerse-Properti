@@ -1,11 +1,9 @@
-<ion-content class="pesanan-content">
-
-  <!-- Header -->
+<ion-header class="ion-no-border">
   <div class="pesanan-header">
     <div class="header-left">
       <span class="header-title">Pemesanan Saya</span>
     </div>
-    <div class="header-right">
+    <div class="header-right" (click)="goToNotifikasi()">
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
         fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -13,6 +11,9 @@
       </svg>
     </div>
   </div>
+</ion-header>
+
+<ion-content class="pesanan-content" scrollY="true">
 
   <!-- Filter Tab -->
   <div class="filter-scroll">
@@ -26,11 +27,9 @@
     </div>
   </div>
 
-  <!-- Pesanan List -->
-  <div class="pesanan-list">
-
-    <!-- Empty State -->
-    <div class="empty-state" *ngIf="getFiltered().length === 0">
+  <!-- Empty State -->
+  <div class="empty-wrapper" *ngIf="getFiltered().length === 0">
+    <div class="empty-state">
       <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24"
         fill="none" stroke="#C4B8AE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -43,6 +42,10 @@
       <p class="empty-sub">Pilih unit dan tekan "Pesan Sekarang" untuk memulai</p>
       <button class="btn-cari" (click)="goToUnit()">Cari Unit</button>
     </div>
+  </div>
+
+  <!-- Pesanan List -->
+  <div class="pesanan-list" *ngIf="getFiltered().length > 0">
 
     <!-- Pesanan Card -->
     <div class="pesanan-card" *ngFor="let p of getFiltered()">
@@ -81,34 +84,34 @@
     </div>
   </div>
 
-  <div style="height: 100px;"></div>
-
 </ion-content>
 
 <!-- Bottom Navigation -->
-<div class="bottom-nav">
-  <div class="nav-item" (click)="goToBeranda()">
-    <div class="nav-icon-wrap">
-      <ion-icon name="home-outline"></ion-icon>
+<ion-footer class="ion-no-border">
+  <div class="bottom-nav">
+    <div class="nav-item" (click)="goToBeranda()">
+      <div class="nav-icon-wrap">
+        <ion-icon name="home-outline"></ion-icon>
+      </div>
+      <span>Beranda</span>
     </div>
-    <span>Beranda</span>
-  </div>
-  <div class="nav-item" (click)="goToUnit()">
-    <div class="nav-icon-wrap">
-      <ion-icon name="business-outline"></ion-icon>
+    <div class="nav-item" (click)="goToUnit()">
+      <div class="nav-icon-wrap">
+        <ion-icon name="business-outline"></ion-icon>
+      </div>
+      <span>Unit</span>
     </div>
-    <span>Unit</span>
-  </div>
-  <div class="nav-item active">
-    <div class="nav-icon-wrap active">
-      <ion-icon name="receipt-outline"></ion-icon>
+    <div class="nav-item active">
+      <div class="nav-icon-wrap active">
+        <ion-icon name="receipt-outline"></ion-icon>
+      </div>
+      <span>Pesanan</span>
     </div>
-    <span>Pesanan</span>
-  </div>
-  <div class="nav-item" (click)="goToProfil()">
-    <div class="nav-icon-wrap">
-      <ion-icon name="person-outline"></ion-icon>
+    <div class="nav-item" (click)="goToProfil()">
+      <div class="nav-icon-wrap">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <span>Profil</span>
     </div>
-    <span>Profil</span>
   </div>
-</div>
+</ion-footer>

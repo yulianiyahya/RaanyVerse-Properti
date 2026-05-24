@@ -1,20 +1,16 @@
-<ion-content class="home-content">
-
-  <!-- Header -->
+<ion-header class="ion-no-border">
   <div class="top-header">
     <div class="header-left">
-      <div class="brand-icon"></div>
+      <img src="assets/icon/Logo raanyprop.png" alt="RaanyProp" class="brand-icon" style="width:32px;height:32px;border-radius:8px;object-fit:cover;" />
       <span class="brand-name">RaanyProp</span>
     </div>
     <div class="header-right">
-      <!-- Icon Notifikasi -->
       <span class="icon-btn" (click)="goToNotifikasi()">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
           <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
         </svg>
       </span>
-      <!-- Icon Menu -->
       <span class="icon-btn menu-icon" (click)="toggleMenu()">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -25,7 +21,6 @@
     </div>
   </div>
 
-  <!-- Dropdown Menu — hanya Keluar -->
   <div class="dropdown-menu" *ngIf="menuOpen">
     <div class="dropdown-item danger" (click)="logout()">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -36,6 +31,9 @@
       <span>Keluar</span>
     </div>
   </div>
+</ion-header>
+
+<ion-content class="home-content" [scrollY]="true" [fullscreen]="true">
 
   <!-- Greeting -->
   <div class="greeting-section">
@@ -138,35 +136,33 @@
     </div>
   </div>
 
-  <!-- Spacer agar konten tidak tertutup bottom nav -->
-  <div style="height: 90px;"></div>
-
 </ion-content>
 
-<!-- Bottom Navigation -->
-<div class="bottom-nav">
-  <div class="nav-item active" (click)="goToBeranda()">
-    <div class="nav-icon-wrap active">
-      <ion-icon name="home-outline"></ion-icon>
+<ion-footer class="ion-no-border">
+  <div class="bottom-nav">
+    <div class="nav-item active" (click)="goToBeranda()">
+      <div class="nav-icon-wrap active">
+        <ion-icon name="home-outline"></ion-icon>
+      </div>
+      <span>Beranda</span>
     </div>
-    <span>Beranda</span>
-  </div>
-  <div class="nav-item" (click)="goToUnit()">
-    <div class="nav-icon-wrap">
-      <ion-icon name="business-outline"></ion-icon>
+    <div class="nav-item" (click)="goToUnit()">
+      <div class="nav-icon-wrap">
+        <ion-icon name="business-outline"></ion-icon>
+      </div>
+      <span>Unit</span>
     </div>
-    <span>Unit</span>
-  </div>
-  <div class="nav-item" (click)="goToPesanan()">
-    <div class="nav-icon-wrap">
-      <ion-icon name="receipt-outline"></ion-icon>
+    <div class="nav-item" (click)="goToPesanan()">
+      <div class="nav-icon-wrap">
+        <ion-icon name="receipt-outline"></ion-icon>
+      </div>
+      <span>Pesanan</span>
     </div>
-    <span>Pesanan</span>
-  </div>
-  <div class="nav-item" (click)="goToProfil()">
-    <div class="nav-icon-wrap">
-      <ion-icon name="person-outline"></ion-icon>
+    <div class="nav-item" (click)="goToProfil()">
+      <div class="nav-icon-wrap">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <span>Profil</span>
     </div>
-    <span>Profil</span>
   </div>
-</div>
+</ion-footer>

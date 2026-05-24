@@ -1,2 +1,7 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
+
+ion-content {
+  // HAPUS --overflow: auto → menyebabkan scroll conflict di Android APK
+  // Ionic sudah handle scroll secara native, tidak perlu di-override
+}

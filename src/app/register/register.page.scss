@@ -6,12 +6,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 40px 28px;
+  padding: 40px 28px 80px;
 }
 
-/* Logo Section */
 .logo-section {
   display: flex;
   flex-direction: column;
@@ -30,7 +27,6 @@
   .app-name {
     font-size: 26px;
     font-weight: 700;
-    font-family: 'Playfair Display', serif;
     color: #2C1A0E;
     margin: 0;
     letter-spacing: -0.5px;
@@ -44,7 +40,6 @@
   }
 }
 
-/* Form Section */
 .form-section {
   width: 100%;
   max-width: 340px;
@@ -52,7 +47,6 @@
   .form-title {
     font-size: 22px;
     font-weight: 700;
-    font-family: 'Playfair Display', serif;
     color: #2C1A0E;
     margin: 0 0 4px;
   }
@@ -102,11 +96,10 @@
         background: transparent;
         font-size: 14px;
         color: #2C1A0E;
-        font-family: 'Playfair Display', serif;
+        font-family: inherit;
 
         &::placeholder {
           color: #C4B8AE;
-          font-family: 'Playfair Display', serif;
         }
       }
 
@@ -129,7 +122,7 @@
     font-weight: 600;
     cursor: pointer;
     letter-spacing: 0.3px;
-    font-family: 'Playfair Display', serif;
+    font-family: inherit;
     margin-top: 8px;
     transition: background 0.2s ease, transform 0.1s ease;
 
