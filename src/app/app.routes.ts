@@ -58,4 +58,16 @@ export const routes: Routes = [
     path: 'form-pemesanan',
     loadComponent: () => import('./form-pemesanan/form-pemesanan.page').then( m => m.FormPemesananPage)
   },
+  {
+    path: 'forgot-password',
+    loadComponent: () => import('./forgot-password/forgot-password.page').then( m => m.ForgotPasswordPage)
+  },
+  {
+    path: 'verify-otp',
+    loadComponent: () => import('./verify-otp/verify-otp.page').then( m => m.VerifyOtpPage)
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./reset-password/reset-password.page').then( m => m.ResetPasswordPage)
+  },
 ];
