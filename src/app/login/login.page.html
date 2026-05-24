@@ -37,6 +37,22 @@
 
       <button class="btn-masuk" (click)="login()">Masuk</button>
 
+      <!-- Divider -->
+      <div class="divider">
+        <span>atau</span>
+      </div>
+
+      <!-- Hanya tampil di Web/Browser -->
+      <div *ngIf="!isNative" id="google-btn" 
+        style="display:flex; justify-content:center; margin-bottom:16px;">
+      </div>
+
+      <!-- Hanya tampil di HP/Android -->
+      <button *ngIf="isNative" class="btn-google" (click)="loginWithGoogle()">
+        <img src="assets/icon/google.png" width="20" height="20" alt="Google" />
+        Masuk dengan Google
+      </button>
+
       <p class="register-link">Belum punya akun? <a (click)="goToRegister()">Daftar</a></p>
 
       <p class="version">v1.0 · RaanyVerse</p>

@@ -4,4 +4,5 @@
     <string name="title_activity_main">RaanyVerseProperty</string>
     <string name="package_name">io.ionic.starter</string>
     <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="server_client_id">788458855289-pdt0mlk9kj0dg7a97lvrr7tml3m2hb7g.apps.googleusercontent.com</string>
 </resources>
