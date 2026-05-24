@@ -24,6 +24,13 @@ ion-header {
     align-items: center;
     gap: 8px;
 
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
     .brand-name {
       font-size: 16px;
       font-weight: 700;
