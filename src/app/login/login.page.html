@@ -1,0 +1,62 @@
+<ion-content class="login-content">
+  <div class="login-wrapper">
+
+    <!-- Logo -->
+    <div class="logo-section">
+      <img src="assets/icon/Logo raanyprop.png" alt="RaanyProp" class="logo-box" style="width:100px;height:100px;border-radius:20px;object-fit:cover;" />
+      <h1 class="app-name">RaanyProp</h1>
+      <p class="app-tagline">by RaanyVerse</p>
+    </div>
+
+    <!-- Form -->
+    <div class="form-section">
+      <div class="input-group">
+        <label>Email</label>
+        <div class="input-wrapper">
+          <ion-icon name="mail-outline"></ion-icon>
+          <input type="email" placeholder="nama@email.com" [(ngModel)]="email" />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Kata Sandi</label>
+        <div class="input-wrapper">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <input [type]="showPassword ? 'text' : 'password'" placeholder="••••••••" [(ngModel)]="password" />
+          <ion-icon 
+            [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" 
+            class="toggle-password"
+            (click)="togglePassword()">
+          </ion-icon>
+        </div>
+      </div>
+
+      <div class="forgot-password">
+        <a (click)="goToForgotPassword()">Lupa Kata Sandi?</a>
+      </div>
+
+      <button class="btn-masuk" (click)="login()">Masuk</button>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span>atau</span>
+      </div>
+
+      <!-- Hanya tampil di Web/Browser -->
+      <div *ngIf="!isNative" id="google-btn" 
+        style="display:flex; justify-content:center; margin-bottom:16px;">
+      </div>
+
+      <!-- Hanya tampil di HP/Android -->
+      <button *ngIf="isNative" class="btn-google" (click)="loginWithGoogle()">
+        <ion-icon name="logo-google" style="font-size: 20px; color: #DB4437;"></ion-icon>
+        Masuk dengan Google
+      </button>
+
+      <p class="register-link">Belum punya akun? <a (click)="goToRegister()">Daftar</a></p>
+
+      <p class="version">v1.0 · RaanyVerse</p>
+    </div>
+
+  </div>
+</ion-content>

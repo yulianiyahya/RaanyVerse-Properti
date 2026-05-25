@@ -1,0 +1,123 @@
+<ion-header class="ion-no-border">
+  <div class="complaint-header">
+    <div class="back-btn" (click)="goBack()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span>Kembali</span>
+    </div>
+    <span class="header-title">Submit Complaint</span>
+    <div class="header-placeholder"></div>
+  </div>
+</ion-header>
+
+<ion-content class="complaint-content">
+
+  <!-- FIX: wrapper full-height agar empty state bisa di-center -->
+  <div class="empty-wrapper" *ngIf="!punyaUnit">
+    <div class="empty-unit-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#C4B8AE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <h3>Belum Ada Unit</h3>
+      <p>Kamu belum memiliki unit hunian. Fitur ini tersedia setelah kamu mendapatkan unit dari admin.</p>
+      <button class="btn-kembali" (click)="goBack()">Kembali ke Beranda</button>
+    </div>
+  </div>
+
+  <!-- Sudah punya unit -->
+  <ng-container *ngIf="punyaUnit">
+
+    <!-- Info Unit -->
+    <div class="unit-info-bar">
+      <ion-icon name="home-outline"></ion-icon>
+      <span>{{ namaUnit }}</span>
+    </div>
+
+    <!-- Form -->
+    <div class="form-section">
+
+      <div class="form-group">
+        <label>Kategori Keluhan</label>
+        <div class="select-wrapper">
+          <select [(ngModel)]="kategori">
+            <option value="" disabled selected>Pilih kategori...</option>
+            <option value="kebersihan">Kebersihan</option>
+            <option value="keamanan">Keamanan</option>
+            <option value="fasilitas">Fasilitas Umum</option>
+            <option value="listrik">Listrik &amp; Air</option>
+            <option value="bangunan">Kerusakan Bangunan</option>
+            <option value="lainnya">Lainnya</option>
+          </select>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9E8878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Tingkat Prioritas</label>
+        <div class="priority-list">
+          <div
+            class="priority-item"
+            *ngFor="let p of prioritasList"
+            [class.selected]="prioritas === p.value"
+            (click)="prioritas = p.value"
+          >
+            <span class="priority-dot" [ngClass]="p.value"></span>
+            <span>{{ p.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Judul Keluhan</label>
+        <div class="input-wrapper">
+          <input type="text" [(ngModel)]="judul" placeholder="Contoh: Kebocoran atap kamar mandi" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Deskripsi Keluhan</label>
+        <div class="textarea-wrapper">
+          <textarea [(ngModel)]="deskripsi" placeholder="Jelaskan keluhan kamu secara detail..." rows="5"></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Lokasi / Area</label>
+        <div class="input-wrapper">
+          <input type="text" [(ngModel)]="lokasi" placeholder="Contoh: Kamar mandi lantai 2" />
+        </div>
+      </div>
+
+      <button class="btn-submit" (click)="submit()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+        <span>Kirim Keluhan</span>
+      </button>
+
+    </div>
+
+    <!-- Riwayat Keluhan -->
+    <div class="section" *ngIf="riwayatList.length > 0">
+      <h4 class="section-title">RIWAYAT KELUHAN</h4>
+      <div class="riwayat-list">
+        <div class="riwayat-item" *ngFor="let item of riwayatList">
+          <div class="riwayat-top">
+            <span class="riwayat-judul">{{ item.judul }}</span>
+            <span class="badge-riwayat" [ngClass]="item.status">{{ item.statusLabel }}</span>
+          </div>
+          <p class="riwayat-desc">{{ item.deskripsi }}</p>
+          <p class="riwayat-time">{{ item.waktu }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 32px;"></div>
+
+  </ng-container>
+
+</ion-content>

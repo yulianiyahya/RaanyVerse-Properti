@@ -1,0 +1,101 @@
+<ion-header class="ion-no-border">
+  <div class="paybill-header">
+    <div class="back-btn" (click)="goBack()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span>Kembali</span>
+    </div>
+    <span class="header-title">Bayar Tagihan</span>
+    <div class="header-placeholder"></div>
+  </div>
+</ion-header>
+
+<ion-content class="paybill-content">
+
+  <!-- FIX: wrapper full-height agar empty state bisa di-center -->
+  <div class="empty-wrapper" *ngIf="!punyaUnit">
+    <div class="empty-unit-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#C4B8AE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+        <line x1="1" y1="10" x2="23" y2="10"></line>
+      </svg>
+      <h3>Belum Ada Tagihan</h3>
+      <p>Kamu belum memiliki unit hunian. Tagihan akan muncul setelah kamu mendapatkan unit dari admin.</p>
+      <button class="btn-kembali" (click)="goBack()">Kembali ke Beranda</button>
+    </div>
+  </div>
+
+  <!-- Sudah punya unit -->
+  <ng-container *ngIf="punyaUnit">
+
+    <!-- Summary Card -->
+    <div class="summary-card">
+      <p class="summary-label">TOTAL TAGIHAN BULAN INI</p>
+      <h2 class="summary-amount">Rp {{ totalTagihan | number:'1.0-0' }}</h2>
+      <p class="summary-due">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        Jatuh tempo: {{ jatuhTempo }}
+      </p>
+    </div>
+
+    <!-- Rincian Tagihan -->
+    <div class="section">
+      <h4 class="section-title">RINCIAN TAGIHAN</h4>
+      <div class="tagihan-list">
+        <div class="tagihan-item" *ngFor="let item of rincianTagihan">
+          <div class="tagihan-left">
+            <p class="tagihan-nama">{{ item.nama }}</p>
+            <p class="tagihan-periode">{{ item.periode }}</p>
+          </div>
+          <div class="tagihan-right">
+            <span class="tagihan-nominal">Rp {{ item.nominal | number:'1.0-0' }}</span>
+            <span class="badge-status" [ngClass]="item.status">{{ item.statusLabel }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metode Pembayaran -->
+    <div class="section">
+      <h4 class="section-title">METODE PEMBAYARAN</h4>
+      <div class="metode-list">
+        <div
+          class="metode-item"
+          *ngFor="let m of metodeList"
+          [class.selected]="metodeTerpilih === m.id"
+          (click)="metodeTerpilih = m.id"
+        >
+          <div class="metode-icon">{{ m.icon }}</div>
+          <div class="metode-info">
+            <p class="metode-nama">{{ m.nama }}</p>
+            <p class="metode-desc">{{ m.deskripsi }}</p>
+          </div>
+          <div class="metode-radio">
+            <div class="radio-inner" *ngIf="metodeTerpilih === m.id"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+  </ng-container>
+
+</ion-content>
+
+<!-- Footer Bayar — hanya muncul kalau punya unit -->
+<div class="footer-bayar" *ngIf="punyaUnit">
+  <div class="footer-info">
+    <p class="footer-label">Total Bayar</p>
+    <p class="footer-amount">Rp {{ totalTagihan | number:'1.0-0' }}</p>
+  </div>
+  <button class="btn-bayar" (click)="bayar()">
+    Bayar Sekarang
+  </button>
+</div>

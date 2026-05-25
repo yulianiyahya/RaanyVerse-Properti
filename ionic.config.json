@@ -1,0 +1,7 @@
+{
+  "name": "RaanyVerseProperty",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

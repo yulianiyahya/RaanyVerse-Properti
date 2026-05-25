@@ -1,0 +1,28 @@
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/* @import '@ionic/angular/css/palettes/dark.system.css'; */
+
+body,
+ion-app,
+p, span, div,
+h1, h2, h3, h4, h5, h6,
+input, textarea, select, button {
+  font-family: 'Playfair Display', serif;
+}
+
+ion-content {
+  --font-family: 'Playfair Display', serif;
+  --padding-top: 0px;
+  // HAPUS --overflow: auto → ini root cause scroll tidak berfungsi di Android
+}
+
+// HAPUS ion-router-outlet { overflow: auto } → konflik dengan scroll Ionic native

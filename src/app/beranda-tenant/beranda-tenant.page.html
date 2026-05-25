@@ -1,0 +1,168 @@
+<ion-header class="ion-no-border">
+  <div class="top-header">
+    <div class="header-left">
+      <img src="assets/icon/Logo raanyprop.png" alt="RaanyProp" class="brand-icon" style="width:32px;height:32px;border-radius:8px;object-fit:cover;" />
+      <span class="brand-name">RaanyProp</span>
+    </div>
+    <div class="header-right">
+      <span class="icon-btn" (click)="goToNotifikasi()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+      </span>
+      <span class="icon-btn menu-icon" (click)="toggleMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </span>
+    </div>
+  </div>
+
+  <div class="dropdown-menu" *ngIf="menuOpen">
+    <div class="dropdown-item danger" (click)="logout()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+      <span>Keluar</span>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content class="home-content" [scrollY]="true">
+
+  <!-- Greeting -->
+  <div class="greeting-section">
+    <h2 class="greeting-text">{{ sapaan }}, {{ namaUser }} {{ getEmoji() }}</h2>
+    <p class="greeting-sub">Semoga harimu menyenangkan di hunian kami.</p>
+  </div>
+
+  <!-- Unit Card: ada unit -->
+  <div class="unit-card" *ngIf="unitData">
+    <div class="unit-card-top">
+      <span class="unit-label">UNIT ANDA</span>
+      <span class="badge-aktif">AKTIF</span>
+    </div>
+    <h3 class="unit-name">{{ unitData.nama }}</h3>
+    <div class="unit-due">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <span>Jatuh tempo: {{ unitData.jatuhTempo }}</span>
+    </div>
+    <div class="unit-footer">
+      <div class="tenant-avatar">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <a class="lihat-rincian">Lihat Rincian →</a>
+    </div>
+  </div>
+
+  <!-- Unit Card: belum punya unit -->
+  <div class="empty-unit" *ngIf="!unitData">
+    <div class="empty-unit-inner">
+      <ion-icon name="home-outline"></ion-icon>
+      <p>Kamu belum memiliki unit</p>
+      <span>Hubungi admin untuk mendapatkan unit hunian</span>
+    </div>
+  </div>
+
+  <!-- Aksi Cepat -->
+  <div class="section">
+    <h4 class="section-title">AKSI CEPAT</h4>
+    <div class="aksi-grid">
+
+      <div class="aksi-item" (click)="goToPayBill()">
+        <div class="aksi-icon">
+          <ion-icon name="card-outline"></ion-icon>
+        </div>
+        <span>Pay Bill</span>
+      </div>
+
+      <div class="aksi-item" (click)="goToComplaint()">
+        <div class="aksi-icon">
+          <ion-icon name="megaphone-outline"></ion-icon>
+        </div>
+        <span>Submit Complaint</span>
+      </div>
+
+      <div class="aksi-item" (click)="goToMaintenance()">
+        <div class="aksi-icon">
+          <ion-icon name="construct-outline"></ion-icon>
+        </div>
+        <span>Request Maintenance</span>
+      </div>
+
+      <div class="aksi-item" (click)="goToHistory()">
+        <div class="aksi-icon">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <span>History</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Aktivitas Terbaru: ada aktivitas -->
+  <div class="section" *ngIf="aktivitasList.length > 0">
+    <div class="section-header">
+      <h4 class="section-title">AKTIVITAS TERBARU</h4>
+      <a class="lihat-semua">LIHAT SEMUA</a>
+    </div>
+    <div class="aktivitas-list">
+      <div class="aktivitas-item" *ngFor="let item of aktivitasList">
+        <div class="aktivitas-icon" [ngClass]="item.tipe">
+          <ion-icon [name]="item.icon"></ion-icon>
+        </div>
+        <div class="aktivitas-info">
+          <p class="aktivitas-title">{{ item.judul }}</p>
+          <p class="aktivitas-desc">{{ item.deskripsi }}</p>
+          <p class="aktivitas-time">{{ item.waktu }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aktivitas Terbaru: kosong -->
+  <div class="section" *ngIf="aktivitasList.length === 0">
+    <div class="section-header">
+      <h4 class="section-title">AKTIVITAS TERBARU</h4>
+    </div>
+    <div class="empty-aktivitas">
+      <ion-icon name="document-outline"></ion-icon>
+      <p>Belum ada aktivitas</p>
+    </div>
+  </div>
+
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <div class="bottom-nav">
+    <div class="nav-item active" (click)="goToBeranda()">
+      <div class="nav-icon-wrap active">
+        <ion-icon name="home-outline"></ion-icon>
+      </div>
+      <span>Beranda</span>
+    </div>
+    <div class="nav-item" (click)="goToUnit()">
+      <div class="nav-icon-wrap">
+        <ion-icon name="business-outline"></ion-icon>
+      </div>
+      <span>Unit</span>
+    </div>
+    <div class="nav-item" (click)="goToPesanan()">
+      <div class="nav-icon-wrap">
+        <ion-icon name="receipt-outline"></ion-icon>
+      </div>
+      <span>Pesanan</span>
+    </div>
+    <div class="nav-item" (click)="goToProfil()">
+      <div class="nav-icon-wrap">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <span>Profil</span>
+    </div>
+  </div>
+</ion-footer>

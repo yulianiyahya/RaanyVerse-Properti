@@ -1,0 +1,106 @@
+<ion-content class="detail-content">
+
+  <!-- Gambar Header -->
+  <div class="detail-img-wrap">
+    <img [src]="unit?.gambar" [alt]="unit?.nama" class="detail-img" />
+
+    <div class="img-overlay-top">
+      <div class="back-btn" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+          fill="none" stroke="#2C1A0E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </div>
+      <div class="bookmark-btn" (click)="toggleFavorit($event)">
+        <ng-container *ngIf="isFavorit; else notFavorit">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+            fill="#C0622A" stroke="#C0622A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </ng-container>
+        <ng-template #notFavorit>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+            fill="none" stroke="#2C1A0E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </ng-template>
+      </div>
+    </div>
+
+    <span class="badge-tersedia">
+      <span class="dot"></span> Tersedia
+    </span>
+  </div>
+
+  <!-- Detail Info -->
+  <div class="detail-body">
+
+    <div class="detail-top">
+      <h2 class="detail-nama">{{ unit?.nama }}</h2>
+      <div class="detail-rating">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+          fill="#F9A825" stroke="#F9A825" stroke-width="1">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>{{ unit?.rating }}</span>
+      </div>
+    </div>
+
+    <div class="detail-lokasi">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+        fill="none" stroke="#9E8878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+      <span>{{ unit?.lokasi }}</span>
+    </div>
+
+    <!-- Fasilitas -->
+    <div class="section">
+      <h4 class="section-title">FASILITAS</h4>
+      <div class="fasilitas-grid">
+        <div class="fasilitas-item" *ngFor="let f of fasilitasList">
+          <span class="fasilitas-icon">{{ f.icon }}</span>
+          <span class="fasilitas-label">{{ f.label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deskripsi -->
+    <div class="section">
+      <h4 class="section-title">DESKRIPSI</h4>
+      <p class="detail-desc">{{ unit?.deskripsi || 'Unit hunian modern dengan fasilitas lengkap dan lokasi strategis. Cocok untuk profesional muda yang menginginkan kenyamanan dan kemudahan akses ke pusat kota.' }}</p>
+    </div>
+
+    <!-- Harga -->
+    <div class="section">
+      <h4 class="section-title">HARGA</h4>
+      <div class="harga-card">
+        <div class="harga-row">
+          <span class="harga-label">Sewa per Bulan</span>
+          <span class="harga-value">Rp {{ unit?.harga | number:'1.0-0' }}</span>
+        </div>
+        <div class="harga-divider"></div>
+        <div class="harga-row">
+          <span class="harga-label">Deposit</span>
+          <span class="harga-value">Rp {{ (unit?.harga * 2) | number:'1.0-0' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 100px;"></div>
+
+  </div>
+
+</ion-content>
+
+<!-- Footer -->
+<div class="footer-pesan">
+  <div class="footer-harga">
+    <p class="footer-label">Harga per Bulan</p>
+    <p class="footer-amount">Rp {{ unit?.harga | number:'1.0-0' }}</p>
+  </div>
+  <button class="btn-pesan" (click)="pesan()">
+    Pesan Unit Ini
+  </button>
+</div>

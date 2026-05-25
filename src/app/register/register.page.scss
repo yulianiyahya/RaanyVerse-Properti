@@ -1,0 +1,154 @@
+.register-content {
+  --background: #FAF8F5;
+}
+
+.register-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 28px 80px;
+}
+
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+
+  .logo-box {
+    width: 72px;
+    height: 72px;
+    background: #2C1A0E;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 8px 24px rgba(44, 26, 14, 0.25);
+  }
+
+  .app-name {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2C1A0E;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+
+  .app-tagline {
+    font-size: 13px;
+    color: #9E8878;
+    margin: 4px 0 0;
+    letter-spacing: 0.5px;
+  }
+}
+
+.form-section {
+  width: 100%;
+  max-width: 340px;
+
+  .form-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #2C1A0E;
+    margin: 0 0 4px;
+  }
+
+  .form-subtitle {
+    font-size: 13px;
+    color: #9E8878;
+    margin: 0 0 24px;
+  }
+
+  .input-group {
+    margin-bottom: 16px;
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #2C1A0E;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #E0D8D0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      gap: 10px;
+      transition: border-color 0.2s ease;
+
+      &:focus-within {
+        border-color: #C0622A;
+      }
+
+      ion-icon {
+        font-size: 18px;
+        color: #9E8878;
+        flex-shrink: 0;
+      }
+
+      input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 14px;
+        color: #2C1A0E;
+        font-family: inherit;
+
+        &::placeholder {
+          color: #C4B8AE;
+        }
+      }
+
+      .toggle-password {
+        cursor: pointer;
+        flex-shrink: 0;
+        color: #9E8878;
+      }
+    }
+  }
+
+  .btn-daftar {
+    width: 100%;
+    padding: 15px;
+    background: #C0622A;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    font-family: inherit;
+    margin-top: 8px;
+    transition: background 0.2s ease, transform 0.1s ease;
+
+    &:active {
+      background: #A0521F;
+      transform: scale(0.98);
+    }
+  }
+
+  .login-link {
+    text-align: center;
+    font-size: 13px;
+    color: #9E8878;
+    margin-top: 18px;
+
+    a {
+      color: #C0622A;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  .version {
+    text-align: center;
+    font-size: 12px;
+    color: #C4B8AE;
+    margin-top: 16px;
+  }
+}

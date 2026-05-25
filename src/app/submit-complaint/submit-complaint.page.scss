@@ -1,0 +1,322 @@
+.complaint-content {
+  --background: #FAF8F5;
+  --padding-bottom: 32px;
+}
+
+.complaint-content::part(scroll) {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+ion-header {
+  background: #2C1A0E;
+
+  &::after {
+    display: none;
+  }
+}
+
+.complaint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  padding-top: calc(12px + var(--ion-safe-area-top, 0px));
+  background: #2C1A0E;
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+
+    span {
+      font-size: 13px;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+  }
+
+  .header-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  .header-placeholder {
+    width: 60px;
+  }
+}
+
+.unit-info-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #F5EDE6;
+  padding: 10px 20px;
+  border-bottom: 1px solid #E0D8D0;
+
+  ion-icon {
+    font-size: 16px;
+    color: #C0622A;
+  }
+
+  span {
+    font-size: 13px;
+    font-weight: 600;
+    color: #C0622A;
+  }
+}
+
+.form-section {
+  padding: 20px;
+
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #2C1A0E;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .input-wrapper {
+      border: 1.5px solid #E0D8D0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      transition: border-color 0.2s ease;
+
+      &:focus-within { border-color: #C0622A; }
+
+      input {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 14px;
+        color: #2C1A0E;
+        font-family: inherit;
+
+        &::placeholder { color: #C4B8AE; }
+      }
+    }
+
+    .textarea-wrapper {
+      border: 1.5px solid #E0D8D0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      transition: border-color 0.2s ease;
+
+      &:focus-within { border-color: #C0622A; }
+
+      textarea {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 14px;
+        color: #2C1A0E;
+        resize: none;
+        font-family: inherit;
+        line-height: 1.6;
+
+        &::placeholder { color: #C4B8AE; }
+      }
+    }
+
+    .select-wrapper {
+      position: relative;
+      border: 1.5px solid #E0D8D0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+
+      select {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 14px;
+        color: #2C1A0E;
+        appearance: none;
+        cursor: pointer;
+        font-family: inherit;
+      }
+    }
+
+    .priority-list {
+      display: flex;
+      gap: 10px;
+
+      .priority-item {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px;
+        border: 1.5px solid #E0D8D0;
+        border-radius: 12px;
+        background: #FFFFFF;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        color: #9E8878;
+        transition: all 0.2s ease;
+
+        &.selected {
+          border-color: #C0622A;
+          background: #FFF8F4;
+          color: #2C1A0E;
+        }
+
+        .priority-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+
+          &.rendah { background: #4CAF50; }
+          &.sedang { background: #FFC107; }
+          &.tinggi { background: #FF6B6B; }
+        }
+      }
+    }
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: #C0622A;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+    font-family: inherit;
+
+    &:active { background: #A0521E; }
+  }
+}
+
+.section {
+  padding: 0 20px 20px;
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #2C1A0E;
+    letter-spacing: 1px;
+    margin: 0 0 12px;
+  }
+}
+
+.riwayat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .riwayat-item {
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 8px rgba(44, 26, 14, 0.07);
+
+    .riwayat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+
+      .riwayat-judul {
+        font-size: 14px;
+        font-weight: 700;
+        color: #2C1A0E;
+      }
+
+      .badge-riwayat {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 20px;
+
+        &.proses { background: #FFF3E0; color: #C0622A; }
+        &.selesai { background: #E8F5E9; color: #4CAF50; }
+        &.ditolak { background: #FFEBEE; color: #FF6B6B; }
+      }
+    }
+
+    .riwayat-desc {
+      font-size: 12px;
+      color: #9E8878;
+      margin: 0 0 6px;
+      line-height: 1.5;
+    }
+
+    .riwayat-time {
+      font-size: 11px;
+      color: #C4B8AE;
+      margin: 0;
+    }
+  }
+}
+
+.empty-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+
+.empty-unit-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 32px;
+  gap: 12px;
+
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2C1A0E;
+    margin: 8px 0 0;
+  }
+
+  p {
+    font-size: 13px;
+    color: #9E8878;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .btn-kembali {
+    margin-top: 16px;
+    padding: 12px 28px;
+    background: #C0622A;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+
+    &:active { background: #A0521E; }
+  }
+}

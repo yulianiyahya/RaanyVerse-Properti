@@ -1,0 +1,39 @@
+<ion-content>
+  <div class="rp-container">
+
+    <!-- Logo -->
+    <div class="rp-logo">
+      <img src="assets/icon/Logo raanyprop.png" alt="RaanyProp" class="logo-img" />
+      <h1 class="rp-brand">RaanyProp</h1>
+      <p class="rp-by">by RaanyVerse</p>
+    </div>
+
+    <h2 class="rp-title">Verifikasi Email</h2>
+    <p class="rp-desc">Kode 4 digit telah dikirim ke <b>{{ email }}</b></p>
+
+    <!-- OTP Input -->
+    <div class="otp-row">
+      <input
+        *ngFor="let i of [0,1,2,3]"
+        class="otp-box"
+        type="tel"
+        maxlength="1"
+        [(ngModel)]="otpDigits[i]"
+        (input)="onOtpInput($event, i)"
+        (keydown)="onKeyDown($event, i)"
+        #otpInput />
+    </div>
+
+    <p class="resend-text">
+      Tidak menerima kode?
+      <span class="resend-link" (click)="resend()" [class.disabled]="timerActive">
+        Kirim ulang {{ timerActive ? '(' + timer + 's)' : '' }}
+      </span>
+    </p>
+
+    <button class="btn-verify" (click)="verifyOtp()">Verifikasi</button>
+    <button class="btn-ghost" (click)="goBack()">Kembali</button>
+
+    <p class="rp-version">v1.0 · RaanyVerse</p>
+  </div>
+</ion-content>
