@@ -3,13 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-beranda-tenant',
   templateUrl: './beranda-tenant.page.html',
   styleUrls: ['./beranda-tenant.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
+  providers: [ApiService],
 })
 export class BerandaTenantPage implements OnInit {
   namaUser: string = '';
@@ -18,7 +21,7 @@ export class BerandaTenantPage implements OnInit {
   aktivitasList: any[] = [];
   menuOpen: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private api: ApiService) {}
 
   ngOnInit() {
     const nama = localStorage.getItem('namaUser') || 'Pengguna';
@@ -37,12 +40,75 @@ export class BerandaTenantPage implements OnInit {
       this.sapaan = 'Selamat Malam';
     }
 
-    const email = localStorage.getItem('emailUser') || '';
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find((u: any) => u.email === email);
+    // Ambil data user profil terbaru dari API
+    this.api.getUser().subscribe({
+      next: (res: any) => {
+        if (res && res.name) {
+          this.namaUser = res.name.charAt(0).toUpperCase() + res.name.slice(1);
+          localStorage.setItem('namaUser', res.name);
+          localStorage.setItem('emailUser', res.email);
+        }
+      },
+      error: (err) => {
+        console.error('Gagal mengambil profil user:', err);
+      }
+    });
 
-    this.unitData = user?.unit || null;
-    this.aktivitasList = user?.aktivitas || [];
+    // Ambil tagihan aktif sebagai Unit data
+    this.api.getBillings().subscribe({
+      next: (res: any) => {
+        if (res && res.length > 0) {
+          const billing = res[0];
+          this.unitData = {
+            nama: billing.unit?.name || 'Unit Anda',
+            jatuhTempo: billing.due_date ? new Date(billing.due_date).toLocaleDateString('id-ID', {
+              day: 'numeric', month: 'long', year: 'numeric'
+            }) : 'Sesuai Kontrak'
+          };
+        } else {
+          this.unitData = null;
+        }
+      },
+      error: () => {
+        this.unitData = null;
+      }
+    });
+
+    // Ambil riwayat aktivitas dari backend
+    this.api.getHistory().subscribe({
+      next: (res: any) => {
+        this.aktivitasList = (res || []).map((act: any) => {
+          let icon = 'document-text-outline';
+          let tipe = 'info';
+          if (act.module === 'booking') {
+            icon = 'calendar-outline';
+            tipe = 'booking';
+          } else if (act.module === 'complaint') {
+            icon = 'megaphone-outline';
+            tipe = 'complaint';
+          } else if (act.module === 'maintenance') {
+            icon = 'construct-outline';
+            tipe = 'maintenance';
+          } else if (act.module === 'payment') {
+            icon = 'card-outline';
+            tipe = 'payment';
+          }
+          
+          return {
+            judul: act.action || 'Aktivitas',
+            deskripsi: act.description || '',
+            waktu: new Date(act.created_at).toLocaleDateString('id-ID', {
+              day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            }),
+            tipe: tipe,
+            icon: icon
+          };
+        }).slice(0, 5); // Tampilkan 5 terbaru di beranda
+      },
+      error: () => {
+        this.aktivitasList = [];
+      }
+    });
   }
 
   getEmoji(): string {
@@ -97,8 +163,15 @@ export class BerandaTenantPage implements OnInit {
 
   logout() {
     this.menuOpen = false;
-    localStorage.removeItem('namaUser');
-    localStorage.removeItem('emailUser');
-    this.router.navigate(['/login']);
+    this.api.logout().subscribe({
+      next: () => {
+        localStorage.clear();
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        localStorage.clear();
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

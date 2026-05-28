@@ -1,0 +1,127 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ApiService {
+  private apiUrl = environment.apiUrl;
+
+  constructor(private http: HttpClient) {}
+
+  // Ambil token dari localStorage
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('auth_token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+  }
+
+  // ===== AUTH =====
+  login(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, { email, password }, {
+      headers: new HttpHeaders({ 'Accept': 'application/json', 'Content-Type': 'application/json' })
+    });
+  }
+
+  register(name: string, email: string, password: string, password_confirmation: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, { name, email, password, password_confirmation }, {
+      headers: new HttpHeaders({ 'Accept': 'application/json', 'Content-Type': 'application/json' })
+    });
+  }
+
+  logout(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/logout`, {}, { headers: this.getHeaders() });
+  }
+
+  getUser(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user`, { headers: this.getHeaders() });
+  }
+
+  updateProfile(data: { name: string; email: string; password?: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/profile`, data, { headers: this.getHeaders() });
+  }
+
+  // ===== UNITS =====
+  getUnits(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/units`, { headers: this.getHeaders() });
+  }
+
+  getUnitDetail(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/units/${id}`, { headers: this.getHeaders() });
+  }
+
+  // ===== BOOKINGS =====
+  getBookings(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/bookings`, { headers: this.getHeaders() });
+  }
+
+  createBooking(unitId: number, startDate: string, endDate: string, ktpFile?: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('unit_id', unitId.toString());
+    formData.append('start_date', startDate);
+    formData.append('end_date', endDate);
+    if (ktpFile) {
+      formData.append('ktp', ktpFile, ktpFile.name);
+    }
+
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json'
+    });
+
+    return this.http.post(`${this.apiUrl}/bookings`, formData, { headers });
+  }
+
+  syncCalendar(bookingId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/bookings/${bookingId}/sync`, {}, { headers: this.getHeaders() });
+  }
+
+  // ===== BILLINGS & PAYMENT =====
+  getBillings(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/billings`, { headers: this.getHeaders() });
+  }
+
+  payBilling(billingId: number, type: string = 'full'): Observable<any> {
+    return this.http.post(`${this.apiUrl}/billings/${billingId}/pay`, { type }, { headers: this.getHeaders() });
+  }
+
+  // ===== COMPLAINTS =====
+  getComplaints(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/complaints`, { headers: this.getHeaders() });
+  }
+
+  createComplaint(unitId: number, description: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/complaints`, {
+      unit_id: unitId,
+      description
+    }, { headers: this.getHeaders() });
+  }
+
+  // ===== MAINTENANCES =====
+  getMaintenances(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/maintenances`, { headers: this.getHeaders() });
+  }
+
+  createMaintenance(unitId: number, description: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/maintenances`, {
+      unit_id: unitId,
+      description
+    }, { headers: this.getHeaders() });
+  }
+
+  // ===== HISTORY =====
+  getHistory(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/history`, { headers: this.getHeaders() });
+  }
+
+  // ===== NOTIFICATIONS =====
+  getNotifications(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/notifications`, { headers: this.getHeaders() });
+  }
+}

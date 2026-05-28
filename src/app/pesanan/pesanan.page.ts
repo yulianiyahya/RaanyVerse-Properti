@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-pesanan',
   templateUrl: './pesanan.page.html',
   styleUrls: ['./pesanan.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, HttpClientModule],
+  providers: [ApiService],
 })
 export class PesananPage implements OnInit {
   filterAktif: string = 'semua';
@@ -21,7 +24,7 @@ export class PesananPage implements OnInit {
     { value: 'ditolak', label: 'Ditolak' },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private api: ApiService) {}
 
   ngOnInit() {
     this.loadPesanan();
@@ -32,7 +35,32 @@ export class PesananPage implements OnInit {
   }
 
   loadPesanan() {
-    this.daftarPesanan = JSON.parse(localStorage.getItem('daftarPesanan') || '[]');
+    this.api.getBookings().subscribe({
+      next: (res: any) => {
+        this.daftarPesanan = (res || []).map((p: any) => {
+          let statusStr = 'menunggu';
+          if (p.status === 'approved') statusStr = 'disetujui';
+          if (p.status === 'rejected') statusStr = 'ditolak';
+          
+          return {
+            id: p.id,
+            unitId: p.unit_id,
+            nama: p.unit?.name || 'Unit Properti',
+            lokasi: p.unit?.estate?.address || p.unit?.estate?.name || 'Lokasi tidak diketahui',
+            harga: p.unit?.price || 0,
+            gambar: p.unit?.image || 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80',
+            tanggal: new Date(p.start_date).toLocaleDateString('id-ID', {
+              day: '2-digit', month: 'short', year: 'numeric'
+            }),
+            durasi: 'Sewa Aktif',
+            status: statusStr,
+          };
+        });
+      },
+      error: (err) => {
+        console.error('Gagal mengambil data pesanan:', err);
+      }
+    });
   }
 
   getFiltered() {

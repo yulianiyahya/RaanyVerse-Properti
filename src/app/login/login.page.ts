@@ -5,6 +5,8 @@ import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { HttpClientModule } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
 
 declare var google: any;
 
@@ -13,7 +15,8 @@ declare var google: any;
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
+  providers: [ApiService],
 })
 export class LoginPage implements OnInit {
   email: string = '';
@@ -23,7 +26,9 @@ export class LoginPage implements OnInit {
 
   private CLIENT_ID = '788458855289-ll2lt1poim3b89aulqvql7qf2aaheida.apps.googleusercontent.com';
   
-  constructor(private router: Router) {}
+  isLoading: boolean = false;
+  
+  constructor(private router: Router, private api: ApiService) {}
 
   ngOnInit() {
     this.isNative = Capacitor.isNativePlatform();
@@ -111,17 +116,22 @@ export class LoginPage implements OnInit {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find((u: any) => u.email === this.email && u.password === this.password);
-
-    if (!user) {
-      alert('Email atau kata sandi salah! Silakan daftar terlebih dahulu.');
-      return;
-    }
-
-    localStorage.setItem('namaUser', user.nama);
-    localStorage.setItem('emailUser', user.email);
-    this.router.navigate(['/beranda-tenant']);
+    this.isLoading = true;
+    this.api.login(this.email, this.password).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        localStorage.setItem('auth_token', res.access_token);
+        localStorage.setItem('namaUser', res.user.name);
+        localStorage.setItem('emailUser', res.user.email);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        this.router.navigate(['/beranda-tenant']);
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        const msg = err.error?.message || 'Login gagal. Email atau kata sandi salah.';
+        alert(msg);
+      }
+    });
   }
 
   goToRegister() {

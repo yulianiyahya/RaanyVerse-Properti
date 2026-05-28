@@ -3,8 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  // Saat local pakai Laragon: 'http://kost-app.test/api'
+  // Saat sudah di cPanel: ganti ke 'https://domain-kamu.com/api'
+  apiUrl: 'http://127.0.0.1:8000/api'
 };
+
 
 /*
  * For easier debugging in development mode, you can import the following file
