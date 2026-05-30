@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { HttpClientModule } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-submit-complaint',
   templateUrl: './submit-complaint.page.html',
   styleUrls: ['./submit-complaint.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
+  providers: [ApiService],
 })
 export class SubmitComplaintPage implements OnInit {
   punyaUnit: boolean = false;
@@ -26,19 +29,64 @@ export class SubmitComplaintPage implements OnInit {
   ];
 
   riwayatList: any[] = [];
+  unitId: number = 0;
+  isLoading: boolean = false;
 
-  constructor(private location: Location) {}
+  constructor(private location: Location, private api: ApiService) {}
 
   ngOnInit() {
-    const email = localStorage.getItem('emailUser') || '';
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find((u: any) => u.email === email);
+    this.loadComplaints();
+  }
 
-    if (user?.unit) {
-      this.punyaUnit = true;
-      this.namaUnit = user.unit.nama || 'Unit Kamu';
-      this.riwayatList = user.complaints || [];
-    }
+  loadComplaints() {
+    this.api.getBillings().subscribe({
+      next: (billings: any) => {
+        if (billings && billings.length > 0) {
+          this.punyaUnit = true;
+          this.unitId = billings[0].unit_id;
+          this.namaUnit = billings[0].unit?.name || 'Unit Anda';
+          
+          this.api.getComplaints().subscribe({
+            next: (res: any) => {
+              this.riwayatList = (res || []).map((c: any) => {
+                let parsedDesc = c.description;
+                let judul = 'Keluhan Unit';
+                let kategori = 'Umum';
+                let prioritas = 'sedang';
+                let lokasi = '';
+                
+                if (c.description.includes('### KELUHAN ###')) {
+                  const parts = c.description.split('\n');
+                  kategori = parts.find((p: string) => p.startsWith('Kategori:'))?.split(':')[1]?.trim() || kategori;
+                  prioritas = parts.find((p: string) => p.startsWith('Prioritas:'))?.split(':')[1]?.trim() || prioritas;
+                  judul = parts.find((p: string) => p.startsWith('Judul:'))?.split(':')[1]?.trim() || judul;
+                  lokasi = parts.find((p: string) => p.startsWith('Lokasi:'))?.split(':')[1]?.trim() || lokasi;
+                  parsedDesc = parts.find((p: string) => p.startsWith('Deskripsi:'))?.split(':')[1]?.trim() || parsedDesc;
+                }
+                
+                return {
+                  judul: judul,
+                  deskripsi: parsedDesc,
+                  kategori: kategori,
+                  prioritas: prioritas,
+                  lokasi: lokasi,
+                  status: c.status === 'resolved' ? 'selesai' : 'proses',
+                  statusLabel: c.status === 'resolved' ? 'SELESAI' : 'DIPROSES',
+                  waktu: new Date(c.created_at).toLocaleDateString('id-ID', {
+                    day: 'numeric', month: 'long', year: 'numeric'
+                  })
+                };
+              });
+            }
+          });
+        } else {
+          this.punyaUnit = false;
+        }
+      },
+      error: () => {
+        this.punyaUnit = false;
+      }
+    });
   }
 
   submit() {
@@ -54,39 +102,33 @@ export class SubmitComplaintPage implements OnInit {
       alert('Deskripsi keluhan tidak boleh kosong!');
       return;
     }
-
-    const email = localStorage.getItem('emailUser') || '';
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const index = users.findIndex((u: any) => u.email === email);
-
-    const complaint = {
-      judul: this.judul,
-      deskripsi: this.deskripsi,
-      kategori: this.kategori,
-      prioritas: this.prioritas,
-      lokasi: this.lokasi,
-      status: 'proses',
-      statusLabel: 'DIPROSES',
-      waktu: new Date().toLocaleDateString('id-ID', {
-        day: 'numeric', month: 'long', year: 'numeric'
-      }),
-    };
-
-    if (!users[index].complaints) {
-      users[index].complaints = [];
+    if (!this.unitId) {
+      alert('Anda belum memiliki unit aktif untuk dilaporkan.');
+      return;
     }
-    users[index].complaints.unshift(complaint);
-    localStorage.setItem('users', JSON.stringify(users));
 
-    this.riwayatList = users[index].complaints;
+    const fullDescription = `### KELUHAN ###\nJudul: ${this.judul}\nKategori: ${this.kategori}\nPrioritas: ${this.prioritas}\nLokasi: ${this.lokasi}\nDeskripsi: ${this.deskripsi}`;
 
-    alert('Keluhan berhasil dikirim! Kami akan segera menindaklanjuti.');
-
-    this.kategori = '';
-    this.judul = '';
-    this.deskripsi = '';
-    this.lokasi = '';
-    this.prioritas = 'sedang';
+    this.isLoading = true;
+    this.api.createComplaint(this.unitId, fullDescription).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        alert('Keluhan berhasil dikirim! Kami akan segera menindaklanjuti.');
+        
+        this.kategori = '';
+        this.judul = '';
+        this.deskripsi = '';
+        this.lokasi = '';
+        this.prioritas = 'sedang';
+        
+        this.loadComplaints();
+      },
+      error: (err) => {
+        this.isLoading = false;
+        const msg = err.error?.message || 'Gagal mengirim keluhan. Coba lagi.';
+        alert(msg);
+      }
+    });
   }
 
   goBack() {

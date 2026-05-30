@@ -3,13 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-unit',
   templateUrl: './unit.page.html',
   styleUrls: ['./unit.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
+  providers: [ApiService],
 })
 export class UnitPage implements OnInit {
   searchQuery: string = '';
@@ -25,69 +28,42 @@ export class UnitPage implements OnInit {
     { value: 'favorit', label: 'Tersimpan' },
   ];
 
-  daftarUnit: any[] = [
-    {
-      id: 1,
-      nama: 'Rumah Minimalis Type 45',
-      lokasi: 'Serpong, Tangerang Selatan',
-      harga: 4500000,
-      rating: 4.9,
-      status: 'tersedia',
-      tipe: 'standar',
-      gambar: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80',
-    },
-    {
-      id: 2,
-      nama: 'Rumah Cluster Modern Type 60',
-      lokasi: 'Bekasi Barat, Bekasi',
-      harga: 6500000,
-      rating: 4.7,
-      status: 'tersedia',
-      tipe: 'standar',
-      gambar: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=80',
-    },
-    {
-      id: 3,
-      nama: 'Rumah Mewah Type 120',
-      lokasi: 'Pondok Indah, Jakarta Selatan',
-      harga: 18000000,
-      rating: 5.0,
-      status: 'tersedia',
-      tipe: 'premium',
-      gambar: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80',
-    },
-    {
-      id: 4,
-      nama: 'Rumah Subsidi Type 36',
-      lokasi: 'Cikarang, Bekasi',
-      harga: 2800000,
-      rating: 4.5,
-      status: 'tersedia',
-      tipe: 'standar',
-      gambar: 'https://images.unsplash.com/photo-1598228723793-52759bba239c?w=600&q=80',
-    },
-    {
-      id: 5,
-      nama: 'Rumah Deluxe Type 90',
-      lokasi: 'BSD City, Tangerang Selatan',
-      harga: 12000000,
-      rating: 4.8,
-      status: 'tersedia',
-      tipe: 'deluxe',
-      gambar: 'https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=600&q=80',
-    },
-  ];
+  daftarUnit: any[] = [];
 
   favoritUnits: any[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private api: ApiService) {}
 
   ngOnInit() {
     this.loadFavorit();
+    this.loadUnits();
   }
 
   ionViewWillEnter() {
     this.loadFavorit();
+    this.loadUnits();
+  }
+
+  loadUnits() {
+    this.api.getUnits().subscribe({
+      next: (res: any) => {
+        this.daftarUnit = (res || []).map((u: any) => {
+          return {
+            id: u.id,
+            nama: u.name || 'Unit Tanpa Nama',
+            lokasi: u.estate?.address || u.estate?.name || 'Lokasi tidak diketahui',
+            harga: u.price || 0,
+            rating: 4.8,
+            status: u.status === 'available' ? 'tersedia' : u.status,
+            tipe: u.type || 'standar',
+            gambar: u.image || 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80',
+          };
+        });
+      },
+      error: (err) => {
+        console.error('Gagal mengambil unit dari server:', err);
+      }
+    });
   }
 
   loadFavorit() {
