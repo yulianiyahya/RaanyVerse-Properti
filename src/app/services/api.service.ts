@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -11,13 +11,21 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // Ambil token dari localStorage
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('auth_token');
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
       'Accept': 'application/json'
+    });
+  }
+
+  private getFormHeaders(): HttpHeaders {
+    const token = localStorage.getItem('auth_token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json'
+      // No Content-Type — browser sets multipart/form-data with boundary automatically
     });
   }
 
@@ -30,6 +38,12 @@ export class ApiService {
 
   register(name: string, email: string, password: string, password_confirmation: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, { name, email, password, password_confirmation }, {
+      headers: new HttpHeaders({ 'Accept': 'application/json', 'Content-Type': 'application/json' })
+    });
+  }
+
+  googleLogin(email: string, name: string, googleIdToken: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/google-login`, { email, name, google_id_token: googleIdToken }, {
       headers: new HttpHeaders({ 'Accept': 'application/json', 'Content-Type': 'application/json' })
     });
   }
@@ -68,14 +82,11 @@ export class ApiService {
     if (ktpFile) {
       formData.append('ktp', ktpFile, ktpFile.name);
     }
+    return this.http.post(`${this.apiUrl}/bookings`, formData, { headers: this.getFormHeaders() });
+  }
 
-    const token = localStorage.getItem('auth_token');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/json'
-    });
-
-    return this.http.post(`${this.apiUrl}/bookings`, formData, { headers });
+  cancelBooking(bookingId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/bookings/${bookingId}`, { headers: this.getHeaders() });
   }
 
   syncCalendar(bookingId: number): Observable<any> {
@@ -96,11 +107,15 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/complaints`, { headers: this.getHeaders() });
   }
 
-  createComplaint(unitId: number, description: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/complaints`, {
-      unit_id: unitId,
-      description
-    }, { headers: this.getHeaders() });
+  createComplaint(unitId: number, description: string, imageFile?: File): Observable<any> {
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('unit_id', unitId.toString());
+      formData.append('description', description);
+      formData.append('image', imageFile, imageFile.name);
+      return this.http.post(`${this.apiUrl}/complaints`, formData, { headers: this.getFormHeaders() });
+    }
+    return this.http.post(`${this.apiUrl}/complaints`, { unit_id: unitId, description }, { headers: this.getHeaders() });
   }
 
   // ===== MAINTENANCES =====
@@ -108,11 +123,42 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/maintenances`, { headers: this.getHeaders() });
   }
 
-  createMaintenance(unitId: number, description: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/maintenances`, {
-      unit_id: unitId,
-      description
-    }, { headers: this.getHeaders() });
+  createMaintenance(unitId: number, description: string, imageFile?: File): Observable<any> {
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('unit_id', unitId.toString());
+      formData.append('description', description);
+      formData.append('image', imageFile, imageFile.name);
+      return this.http.post(`${this.apiUrl}/maintenances`, formData, { headers: this.getFormHeaders() });
+    }
+    return this.http.post(`${this.apiUrl}/maintenances`, { unit_id: unitId, description }, { headers: this.getHeaders() });
+  }
+
+  // ===== FACILITIES =====
+  getFacilities(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/facilities`, { headers: this.getHeaders() });
+  }
+
+  bookFacility(facilityId: number, data: {
+    booking_date: string;
+    start_time: string;
+    end_time: string;
+    guest_count: number;
+  }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/facilities/${facilityId}/book`, data, { headers: this.getHeaders() });
+  }
+
+  getFacilityBookings(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/facility-bookings`, { headers: this.getHeaders() });
+  }
+
+  cancelFacilityBooking(bookingId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/facility-bookings/${bookingId}`, { headers: this.getHeaders() });
+  }
+
+  // ===== ANNOUNCEMENTS =====
+  getAnnouncements(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/announcements`, { headers: this.getHeaders() });
   }
 
   // ===== HISTORY =====
@@ -123,5 +169,9 @@ export class ApiService {
   // ===== NOTIFICATIONS =====
   getNotifications(): Observable<any> {
     return this.http.get(`${this.apiUrl}/notifications`, { headers: this.getHeaders() });
+  }
+
+  markNotificationRead(notificationId: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/notifications/${notificationId}/read`, {}, { headers: this.getHeaders() });
   }
 }

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -10,12 +11,13 @@ import { ApiService } from '../services/api.service';
   templateUrl: './pesanan.page.html',
   styleUrls: ['./pesanan.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, HttpClientModule],
+  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
   providers: [ApiService],
 })
 export class PesananPage implements OnInit {
   filterAktif: string = 'semua';
   daftarPesanan: any[] = [];
+  isLoading: boolean = false;
 
   filterList = [
     { value: 'semua', label: 'Semua' },
@@ -35,13 +37,15 @@ export class PesananPage implements OnInit {
   }
 
   loadPesanan() {
+    this.isLoading = true;
     this.api.getBookings().subscribe({
       next: (res: any) => {
+        this.isLoading = false;
         this.daftarPesanan = (res || []).map((p: any) => {
           let statusStr = 'menunggu';
           if (p.status === 'approved') statusStr = 'disetujui';
           if (p.status === 'rejected') statusStr = 'ditolak';
-          
+
           return {
             id: p.id,
             unitId: p.unit_id,
@@ -52,12 +56,17 @@ export class PesananPage implements OnInit {
             tanggal: new Date(p.start_date).toLocaleDateString('id-ID', {
               day: '2-digit', month: 'short', year: 'numeric'
             }),
-            durasi: 'Sewa Aktif',
+            tanggalSelesai: p.end_date ? new Date(p.end_date).toLocaleDateString('id-ID', {
+              day: '2-digit', month: 'short', year: 'numeric'
+            }) : '-',
             status: statusStr,
+            rawStatus: p.status,
+            isSynced: p.is_synced || false,
           };
         });
       },
       error: (err) => {
+        this.isLoading = false;
         console.error('Gagal mengambil data pesanan:', err);
       }
     });
@@ -69,15 +78,41 @@ export class PesananPage implements OnInit {
   }
 
   batalPesanan(id: number) {
-    const konfirm = confirm('Yakin ingin membatalkan pesanan ini?');
-    if (!konfirm) return;
-    this.daftarPesanan = this.daftarPesanan.filter(p => p.id !== id);
-    localStorage.setItem('daftarPesanan', JSON.stringify(this.daftarPesanan));
+    if (!confirm('Yakin ingin membatalkan pesanan ini? Hanya pesanan yang masih menunggu yang bisa dibatalkan.')) return;
+
+    this.api.cancelBooking(id).subscribe({
+      next: () => {
+        alert('Pesanan berhasil dibatalkan.');
+        this.loadPesanan();
+      },
+      error: (err: any) => {
+        const msg = err.error?.message || 'Gagal membatalkan pesanan.';
+        alert(msg);
+      }
+    });
+  }
+
+  syncKalender(id: number) {
+    this.api.syncCalendar(id).subscribe({
+      next: (res: any) => {
+        alert(res.message || 'Berhasil disinkronkan ke Google Calendar!');
+        this.loadPesanan();
+      },
+      error: (err: any) => {
+        const msg = err.error?.message || 'Gagal sinkronisasi kalender.';
+        alert(msg);
+      }
+    });
   }
 
   getStatusLabel(status: string): string {
     const map: any = { menunggu: 'Menunggu', disetujui: 'Disetujui', ditolak: 'Ditolak' };
     return map[status] || status;
+  }
+
+  getStatusColor(status: string): string {
+    const map: any = { menunggu: 'warning', disetujui: 'success', ditolak: 'danger' };
+    return map[status] || 'medium';
   }
 
   goToBeranda() { this.router.navigate(['/beranda-tenant']); }

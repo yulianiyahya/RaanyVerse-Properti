@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -25,9 +25,8 @@ export class LoginPage implements OnInit {
   isNative: boolean = false;
 
   private CLIENT_ID = '788458855289-ll2lt1poim3b89aulqvql7qf2aaheida.apps.googleusercontent.com';
-  
   isLoading: boolean = false;
-  
+
   constructor(private router: Router, private api: ApiService) {}
 
   ngOnInit() {
@@ -74,8 +73,10 @@ export class LoginPage implements OnInit {
   }
 
   handleGoogleResponse(response: any) {
-    const payload = JSON.parse(atob(response.credential.split('.')[1]));
-    this.saveUserAndNavigate(payload.name, payload.email);
+    // response.credential is the raw Google ID token (JWT)
+    const rawToken = response.credential;
+    const payload = JSON.parse(atob(rawToken.split('.')[1]));
+    this.saveUserAndNavigate(payload.name, payload.email, rawToken);
   }
 
   async loginWithGoogle() {
@@ -85,25 +86,32 @@ export class LoginPage implements OnInit {
         || user.name
         || (user.givenName + ' ' + user.familyName).trim()
         || user.email;
-      this.saveUserAndNavigate(nama, user.email);
+      // For native, use the authentication.idToken from Capacitor Google Auth
+      const idToken = user.authentication?.idToken || '';
+      this.saveUserAndNavigate(nama, user.email, idToken);
     } catch (err: any) {
       console.error('Google login error:', JSON.stringify(err));
       alert('Error detail: ' + JSON.stringify(err));
     }
   }
 
-  saveUserAndNavigate(nama: string, email: string) {
-    localStorage.setItem('namaUser', nama);
-    localStorage.setItem('emailUser', email);
-
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const exists = users.find((u: any) => u.email === email);
-    if (!exists) {
-      users.push({ nama, email, password: '' });
-      localStorage.setItem('users', JSON.stringify(users));
-    }
-
-    this.router.navigate(['/beranda-tenant']);
+  saveUserAndNavigate(nama: string, email: string, googleIdToken: string) {
+    this.isLoading = true;
+    this.api.googleLogin(email, nama, googleIdToken).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        localStorage.setItem('auth_token', res.access_token);
+        localStorage.setItem('namaUser', res.user.name);
+        localStorage.setItem('emailUser', res.user.email);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        this.router.navigate(['/beranda-tenant']);
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        const msg = err.error?.message || 'Google login gagal disinkronkan ke server.';
+        alert(msg);
+      }
+    });
   }
 
   togglePassword() {

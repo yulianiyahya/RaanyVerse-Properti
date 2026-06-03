@@ -1,53 +1,93 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-history',
   templateUrl: './history.page.html',
   styleUrls: ['./history.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, HttpClientModule],
+  providers: [ApiService],
 })
 export class HistoryPage implements OnInit {
   filterAktif: string = 'semua';
   allHistory: any[] = [];
+  isLoading: boolean = true;
 
-  constructor(private location: Location) {}
+  filterList = [
+    { value: 'semua', label: 'Semua' },
+    { value: 'booking', label: 'Booking' },
+    { value: 'complaint', label: 'Complaint' },
+    { value: 'maintenance', label: 'Maintenance' },
+    { value: 'payment', label: 'Pembayaran' },
+    { value: 'facility', label: 'Fasilitas' },
+  ];
+
+  constructor(private location: Location, private router: Router, private api: ApiService) {}
 
   ngOnInit() {
-    const email = localStorage.getItem('emailUser') || '';
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find((u: any) => u.email === email);
+    this.loadHistory();
+  }
 
-    if (user) {
-      // Gabungkan semua riwayat dari berbagai sumber
-      const complaints = (user.complaints || []).map((c: any) => ({
-        ...c,
-        tipe: 'complaint',
-        kategoriLabel: 'Complaint',
-        deskripsi: c.deskripsi || '-',
-      }));
+  ionViewWillEnter() {
+    this.loadHistory();
+  }
 
-      const maintenance = (user.maintenance || []).map((m: any) => ({
-        ...m,
-        tipe: 'maintenance',
-        kategoriLabel: 'Maintenance',
-        deskripsi: m.deskripsi || '-',
-      }));
+  loadHistory() {
+    this.isLoading = true;
+    this.api.getHistory().subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        this.allHistory = (res || []).map((act: any) => ({
+          id: act.id,
+          tipe: act.module || 'info',
+          kategoriLabel: this.getKategoriLabel(act.module),
+          judul: act.action || 'Aktivitas',
+          deskripsi: act.description || '',
+          waktu: new Date(act.created_at).toLocaleDateString('id-ID', {
+            day: 'numeric', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+          }),
+          icon: this.getIcon(act.module),
+          color: this.getColor(act.module),
+        }));
+      },
+      error: () => {
+        this.isLoading = false;
+        this.allHistory = [];
+      }
+    });
+  }
 
-      const pembayaran = (user.pembayaran || []).map((p: any) => ({
-        ...p,
-        tipe: 'pembayaran',
-        kategoriLabel: 'Pembayaran',
-        deskripsi: p.deskripsi || '-',
-      }));
+  getKategoriLabel(module: string): string {
+    const map: any = {
+      booking: 'Booking', complaint: 'Complaint',
+      maintenance: 'Maintenance', payment: 'Pembayaran',
+      facility: 'Fasilitas', billing: 'Tagihan',
+    };
+    return map[module] || 'Aktivitas';
+  }
 
-      // Gabung dan urutkan berdasarkan waktu (terbaru di atas)
-      this.allHistory = [...complaints, ...maintenance, ...pembayaran].sort((a, b) => {
-        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
-      });
-    }
+  getIcon(module: string): string {
+    const map: any = {
+      booking: 'calendar-outline', complaint: 'megaphone-outline',
+      maintenance: 'construct-outline', payment: 'card-outline',
+      facility: 'grid-outline', billing: 'receipt-outline',
+    };
+    return map[module] || 'document-text-outline';
+  }
+
+  getColor(module: string): string {
+    const map: any = {
+      booking: 'primary', complaint: 'warning',
+      maintenance: 'tertiary', payment: 'success',
+      facility: 'secondary', billing: 'danger',
+    };
+    return map[module] || 'medium';
   }
 
   getFilteredHistory() {
@@ -55,7 +95,6 @@ export class HistoryPage implements OnInit {
     return this.allHistory.filter(h => h.tipe === this.filterAktif);
   }
 
-  goBack() {
-    this.location.back();
-  }
+  goBack() { this.location.back(); }
+  goToBeranda() { this.router.navigate(['/beranda-tenant']); }
 }

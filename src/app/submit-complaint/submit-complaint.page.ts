@@ -21,6 +21,7 @@ export class SubmitComplaintPage implements OnInit {
   judul: string = '';
   deskripsi: string = '';
   lokasi: string = '';
+  selectedImage: File | null = null;
 
   prioritasList = [
     { value: 'rendah', label: 'Rendah' },
@@ -36,6 +37,15 @@ export class SubmitComplaintPage implements OnInit {
 
   ngOnInit() {
     this.loadComplaints();
+  }
+
+  onFileSelected(event: any) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      this.selectedImage = files[0];
+    } else {
+      this.selectedImage = null;
+    }
   }
 
   loadComplaints() {
@@ -110,7 +120,7 @@ export class SubmitComplaintPage implements OnInit {
     const fullDescription = `### KELUHAN ###\nJudul: ${this.judul}\nKategori: ${this.kategori}\nPrioritas: ${this.prioritas}\nLokasi: ${this.lokasi}\nDeskripsi: ${this.deskripsi}`;
 
     this.isLoading = true;
-    this.api.createComplaint(this.unitId, fullDescription).subscribe({
+    this.api.createComplaint(this.unitId, fullDescription, this.selectedImage || undefined).subscribe({
       next: (res: any) => {
         this.isLoading = false;
         alert('Keluhan berhasil dikirim! Kami akan segera menindaklanjuti.');
@@ -120,6 +130,7 @@ export class SubmitComplaintPage implements OnInit {
         this.deskripsi = '';
         this.lokasi = '';
         this.prioritas = 'sedang';
+        this.selectedImage = null;
         
         this.loadComplaints();
       },

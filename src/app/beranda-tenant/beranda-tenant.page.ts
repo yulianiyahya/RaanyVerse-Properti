@@ -112,12 +112,7 @@ export class BerandaTenantPage implements OnInit {
   }
 
   getEmoji(): string {
-    const jam = new Date().getHours();
-    if (jam >= 0 && jam <= 4) return '🌙';
-    if (jam >= 5 && jam <= 10) return '👋';
-    if (jam >= 11 && jam <= 15) return '☀️';
-    if (jam >= 16 && jam <= 18) return '🌤️';
-    return '🌙';
+    return '';
   }
 
   toggleMenu() {

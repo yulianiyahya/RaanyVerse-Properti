@@ -1,0 +1,139 @@
+﻿<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Fasilitas Kawasan</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="activeTab">
+      <ion-segment-button value="katalog">
+        <ion-label>Katalog</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="riwayat">
+        <ion-label>Riwayat Saya</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- ===== TAB: KATALOG ===== -->
+  <div *ngIf="activeTab === 'katalog'">
+    <div *ngIf="fasilitasList.length === 0" class="empty-state">
+      <ion-icon name="grid-outline" style="font-size:48px;color:#ccc"></ion-icon>
+      <p>Belum ada fasilitas tersedia.</p>
+    </div>
+
+    <ion-card *ngFor="let f of fasilitasList" class="facility-card">
+      <ion-card-header>
+        <div class="facility-header">
+          <ion-icon [name]="f.icon" class="facility-icon"></ion-icon>
+          <div>
+            <ion-card-title>{{ f.nama }}</ion-card-title>
+            <ion-card-subtitle>{{ f.estate }}</ion-card-subtitle>
+          </div>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <p *ngIf="f.deskripsi" class="desc">{{ f.deskripsi }}</p>
+        <div class="info-row">
+          <span><ion-icon name="time-outline"></ion-icon> {{ f.jamBuka }} – {{ f.jamTutup }}</span>
+          <span><ion-icon name="people-outline"></ion-icon> Maks. {{ f.kapasitas }} orang</span>
+        </div>
+        <div class="fee-row">
+          <span class="fee" *ngIf="f.biaya > 0">Rp {{ f.biaya | number }}</span>
+          <span class="fee free" *ngIf="f.biaya === 0">Gratis</span>
+        </div>
+        <ion-button expand="block" color="primary" (click)="openBookingForm(f)" class="ion-margin-top">
+          <ion-icon name="calendar-outline" slot="start"></ion-icon>
+          Reservasi Sekarang
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- ===== TAB: RIWAYAT ===== -->
+  <div *ngIf="activeTab === 'riwayat'">
+    <div *ngIf="riwayatList.length === 0" class="empty-state">
+      <ion-icon name="calendar-outline" style="font-size:48px;color:#ccc"></ion-icon>
+      <p>Belum ada riwayat reservasi.</p>
+    </div>
+
+    <ion-card *ngFor="let r of riwayatList" class="history-card">
+      <ion-card-content>
+        <div class="history-header">
+          <strong>{{ r.namaFasilitas }}</strong>
+          <ion-badge [color]="getStatusClass(r.status)">{{ r.statusLabel }}</ion-badge>
+        </div>
+        <div class="history-detail">
+          <p><ion-icon name="calendar-outline"></ion-icon> {{ r.tanggal }}</p>
+          <p><ion-icon name="time-outline"></ion-icon> {{ r.waktu }}</p>
+          <p><ion-icon name="people-outline"></ion-icon> {{ r.tamu }} orang</p>
+        </div>
+        <ion-button *ngIf="r.canCancel" expand="block" color="danger" fill="outline" size="small"
+          (click)="batalReservasi(r.id)" class="ion-margin-top">
+          Batalkan Reservasi
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+</ion-content>
+
+<!-- ===== BOOKING FORM MODAL ===== -->
+<ion-modal [isOpen]="showBookingForm" (didDismiss)="closeBookingForm()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>Reservasi {{ selectedFasilitas?.nama }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeBookingForm()">
+            <ion-icon name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-list *ngIf="selectedFasilitas">
+        <ion-item>
+          <ion-label position="stacked">Tanggal Reservasi</ion-label>
+          <ion-input type="date" [(ngModel)]="bookingDate" [min]="minDate"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Jam Mulai</ion-label>
+          <ion-input type="time" [(ngModel)]="startTime" [min]="selectedFasilitas.jamBuka" [max]="selectedFasilitas.jamTutup"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Jam Selesai</ion-label>
+          <ion-input type="time" [(ngModel)]="endTime" [min]="selectedFasilitas.jamBuka" [max]="selectedFasilitas.jamTutup"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Jumlah Tamu (Maks. {{ selectedFasilitas.kapasitas }})</ion-label>
+          <ion-input type="number" [(ngModel)]="guestCount" [min]="1" [max]="selectedFasilitas.kapasitas"></ion-input>
+        </ion-item>
+      </ion-list>
+
+      <div class="fee-summary ion-padding" *ngIf="selectedFasilitas">
+        <p *ngIf="selectedFasilitas.biaya > 0">Biaya: <strong>Rp {{ selectedFasilitas.biaya | number }}</strong></p>
+        <p *ngIf="selectedFasilitas.biaya === 0">Fasilitas ini <strong>gratis</strong></p>
+      </div>
+
+      <ion-button expand="block" color="primary" (click)="submitBooking()" [disabled]="isLoading" class="ion-margin">
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        <span *ngIf="!isLoading">Kirim Reservasi</span>
+      </ion-button>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- Bottom Nav -->
+<ion-tab-bar slot="bottom">
+  <ion-tab-button (click)="goToBeranda()"><ion-icon name="home-outline"></ion-icon><ion-label>Beranda</ion-label></ion-tab-button>
+  <ion-tab-button (click)="goToUnit()"><ion-icon name="business-outline"></ion-icon><ion-label>Unit</ion-label></ion-tab-button>
+  <ion-tab-button (click)="goToPesanan()"><ion-icon name="document-text-outline"></ion-icon><ion-label>Pesanan</ion-label></ion-tab-button>
+  <ion-tab-button (click)="goToProfil()"><ion-icon name="person-outline"></ion-icon><ion-label>Profil</ion-label></ion-tab-button>
+</ion-tab-bar>

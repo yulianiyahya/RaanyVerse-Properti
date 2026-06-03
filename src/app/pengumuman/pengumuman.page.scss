@@ -1,0 +1,51 @@
+﻿.announcement-card {
+  margin-bottom: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.announcement-card:active { transform: scale(0.98); }
+.ann-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.ann-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+.estate-badge { font-size: 11px; }
+.ann-date { font-size: 12px; color: #999; white-space: nowrap; }
+.ann-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 4px 0 6px;
+  color: #222;
+}
+.ann-preview { font-size: 13px; color: #666; line-height: 1.5; }
+.read-more {
+  font-size: 12px;
+  color: var(--ion-color-primary);
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.loading-state, .empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #aaa;
+}
+.detail-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.detail-date { font-size: 13px; color: #999; }
+.detail-content p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #333;
+  white-space: pre-wrap;
+}

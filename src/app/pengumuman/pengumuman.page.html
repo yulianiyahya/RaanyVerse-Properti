@@ -1,0 +1,82 @@
+﻿<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Pengumuman Kawasan</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="loadPengumuman()">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div *ngIf="isLoading" class="loading-state">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Memuat pengumuman...</p>
+  </div>
+
+  <div *ngIf="!isLoading && pengumumanList.length === 0" class="empty-state">
+    <ion-icon name="megaphone-outline" style="font-size:56px;color:#ccc"></ion-icon>
+    <p>Belum ada pengumuman saat ini.</p>
+  </div>
+
+  <ion-card *ngFor="let p of pengumumanList" class="announcement-card" (click)="openDetail(p)">
+    <ion-card-content>
+      <div class="ann-header">
+        <div class="ann-badges">
+          <ion-badge [color]="getPriorityColor(p.prioritas)">{{ getPriorityLabel(p.prioritas) }}</ion-badge>
+          <ion-badge color="light" *ngIf="!p.isGlobal && p.estate" class="estate-badge">{{ p.estate }}</ion-badge>
+          <ion-badge color="tertiary" *ngIf="p.isGlobal" class="estate-badge">Semua Kawasan</ion-badge>
+        </div>
+        <span class="ann-date">{{ p.tanggal }}</span>
+      </div>
+      <h3 class="ann-title">{{ p.judul }}</h3>
+      <p class="ann-preview">{{ p.isi | slice:0:100 }}{{ p.isi.length > 100 ? '...' : '' }}</p>
+      <div class="read-more" *ngIf="p.isi.length > 100">
+        <ion-icon name="chevron-forward-outline"></ion-icon> Baca selengkapnya
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+
+<!-- Detail Modal -->
+<ion-modal [isOpen]="!!selectedItem" (didDismiss)="closeDetail()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar [color]="selectedItem ? getPriorityColor(selectedItem.prioritas) : 'primary'">
+        <ion-title>{{ selectedItem?.judul }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeDetail()">
+            <ion-icon name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding" *ngIf="selectedItem">
+      <div class="detail-meta">
+        <ion-badge [color]="getPriorityColor(selectedItem.prioritas)">{{ getPriorityLabel(selectedItem.prioritas) }}</ion-badge>
+        <ion-badge color="tertiary" *ngIf="selectedItem.isGlobal">Semua Kawasan</ion-badge>
+        <ion-badge color="light" *ngIf="!selectedItem.isGlobal && selectedItem.estate">{{ selectedItem.estate }}</ion-badge>
+        <span class="detail-date">{{ selectedItem.tanggal }}</span>
+      </div>
+      <div class="detail-content">
+        <p>{{ selectedItem.isi }}</p>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- Bottom Nav -->
+<ion-tab-bar slot="bottom">
+  <ion-tab-button (click)="goToBeranda()"><ion-icon name="home-outline"></ion-icon><ion-label>Beranda</ion-label></ion-tab-button>
+  <ion-tab-button (click)="goToUnit()"><ion-icon name="business-outline"></ion-icon><ion-label>Unit</ion-label></ion-tab-button>
+  <ion-tab-button (click)="goToPesanan()"><ion-icon name="document-text-outline"></ion-icon><ion-label>Pesanan</ion-label></ion-tab-button>
+  <ion-tab-button (click)="goToProfil()"><ion-icon name="person-outline"></ion-icon><ion-label>Profil</ion-label></ion-tab-button>
+</ion-tab-bar>

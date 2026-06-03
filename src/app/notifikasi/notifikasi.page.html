@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border">
+﻿<ion-header class="ion-no-border">
   <div class="notif-header">
     <div class="back-btn" (click)="goBack()">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -17,6 +17,12 @@
   <div class="filter-tab">
     <span class="tab-item" [class.active]="filterAktif === 'semua'" (click)="filterAktif = 'semua'">Semua</span>
     <span class="tab-item" [class.active]="filterAktif === 'belum'" (click)="filterAktif = 'belum'">Belum Dibaca</span>
+  </div>
+
+    <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading" style="text-align:center;padding:40px">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p style="color:#aaa;margin-top:12px">Memuat notifikasi...</p>
   </div>
 
   <!-- List Notifikasi -->
