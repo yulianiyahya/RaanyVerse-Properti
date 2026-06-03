@@ -35,7 +35,10 @@
         <a (click)="goToForgotPassword()">Lupa Kata Sandi?</a>
       </div>
 
-      <button class="btn-masuk" (click)="login()">Masuk</button>
+      <button class="btn-masuk" (click)="login()" [disabled]="isLoading">
+        <ion-spinner name="crescent" *ngIf="isLoading" style="margin-right: 8px; width: 20px; height: 20px;"></ion-spinner>
+        {{ isLoading ? 'Memproses...' : 'Masuk' }}
+      </button>
 
       <!-- Divider -->
       <div class="divider">
@@ -48,9 +51,10 @@
       </div>
 
       <!-- Hanya tampil di HP/Android -->
-      <button *ngIf="isNative" class="btn-google" (click)="loginWithGoogle()">
-        <ion-icon name="logo-google" style="font-size: 20px; color: #DB4437;"></ion-icon>
-        Masuk dengan Google
+      <button *ngIf="isNative" class="btn-google" (click)="loginWithGoogle()" [disabled]="isLoading">
+        <ion-spinner name="crescent" *ngIf="isLoading" style="margin-right: 8px; width: 20px; height: 20px; color: #DB4437;"></ion-spinner>
+        <ion-icon *ngIf="!isLoading" name="logo-google" style="font-size: 20px; color: #DB4437;"></ion-icon>
+        {{ isLoading ? 'Memproses...' : 'Masuk dengan Google' }}
       </button>
 
       <p class="register-link">Belum punya akun? <a (click)="goToRegister()">Daftar</a></p>

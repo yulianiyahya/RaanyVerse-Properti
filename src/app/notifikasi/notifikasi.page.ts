@@ -1,78 +1,81 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { HttpClientModule } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-notifikasi',
   templateUrl: './notifikasi.page.html',
   styleUrls: ['./notifikasi.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, HttpClientModule],
+  providers: [ApiService],
 })
 export class NotifikasiPage implements OnInit {
   filterAktif: string = 'semua';
   notifikasiList: any[] = [];
+  isLoading: boolean = true;
 
-  constructor(private location: Location) {}
+  constructor(private location: Location, private api: ApiService) {}
 
   ngOnInit() {
-    const email = localStorage.getItem('emailUser') || '';
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find((u: any) => u.email === email);
+    this.loadNotifikasi();
+  }
 
-    if (user) {
-      const notifList: any[] = [];
+  ionViewWillEnter() {
+    this.loadNotifikasi();
+  }
 
-      // Notifikasi dari complaints
-      (user.complaints || []).forEach((c: any) => {
-        notifList.push({
-          id: 'c_' + c.waktu,
-          tipe: 'info',
-          judul: 'Complaint Dikirim',
-          deskripsi: `Complaint "${c.judul}" berhasil dikirim dan sedang diproses.`,
-          waktu: c.waktu,
-          dibaca: false,
-        });
-      });
-
-      // Notifikasi dari maintenance
-      (user.maintenance || []).forEach((m: any) => {
-        notifList.push({
-          id: 'm_' + m.waktu,
-          tipe: 'info',
-          judul: 'Request Maintenance Dikirim',
-          deskripsi: `Permintaan maintenance "${m.judul}" berhasil dikirim. Teknisi akan menghubungi kamu.`,
-          waktu: m.waktu,
-          dibaca: false,
-        });
-      });
-
-      // Notifikasi dari pembayaran
-      (user.pembayaran || []).forEach((p: any) => {
-        notifList.push({
-          id: 'p_' + p.waktu,
-          tipe: 'sukses',
-          judul: 'Pembayaran Berhasil',
-          deskripsi: `Pembayaran sebesar Rp ${p.nominal?.toLocaleString('id-ID')} telah dikonfirmasi.`,
-          waktu: p.waktu,
-          dibaca: false,
-        });
-      });
-
-      // Notifikasi jika punya unit
-      if (user.unit) {
-        notifList.push({
-          id: 'unit_assigned',
-          tipe: 'tagihan',
-          judul: 'Unit Berhasil Ditetapkan',
-          deskripsi: `Unit ${user.unit.nama} telah ditetapkan untukmu. Jatuh tempo: ${user.unit.jatuhTempo}.`,
-          waktu: 'Baru saja',
-          dibaca: false,
-        });
+  loadNotifikasi() {
+    this.isLoading = true;
+    this.api.getNotifications().subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        this.notifikasiList = (res || []).map((n: any) => ({
+          id: n.id,
+          tipe: n.type || 'info',
+          judul: this.getTitleFromType(n.type),
+          deskripsi: n.message || '',
+          waktu: n.sent_at ? new Date(n.sent_at).toLocaleDateString('id-ID', {
+            day: 'numeric', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+          }) : '',
+          dibaca: n.is_read,
+        }));
+      },
+      error: () => {
+        this.isLoading = false;
+        this.notifikasiList = [];
       }
+    });
+  }
 
-      this.notifikasiList = notifList;
-    }
+  getTitleFromType(type: string): string {
+    const map: any = {
+      upcoming_booking: 'Pengingat Booking',
+      late_payment: 'Tagihan Belum Dibayar',
+      info: 'Informasi',
+    };
+    return map[type] || 'Notifikasi';
+  }
+
+  getIconFromType(type: string): string {
+    const map: any = {
+      upcoming_booking: 'calendar-outline',
+      late_payment: 'card-outline',
+      info: 'information-circle-outline',
+    };
+    return map[type] || 'notifications-outline';
+  }
+
+  getColorFromType(type: string): string {
+    const map: any = {
+      upcoming_booking: 'primary',
+      late_payment: 'danger',
+      info: 'medium',
+    };
+    return map[type] || 'medium';
   }
 
   getFilteredNotif() {
@@ -83,10 +86,16 @@ export class NotifikasiPage implements OnInit {
   }
 
   bacaNotif(item: any) {
+    if (item.dibaca) return;
     item.dibaca = true;
+    this.api.markNotificationRead(item.id).subscribe({
+      error: () => { item.dibaca = false; }
+    });
   }
 
-  goBack() {
-    this.location.back();
+  get unreadCount(): number {
+    return this.notifikasiList.filter(n => !n.dibaca).length;
   }
+
+  goBack() { this.location.back(); }
 }

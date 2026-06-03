@@ -1,0 +1,66 @@
+﻿.facility-card {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.facility-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.facility-icon {
+  font-size: 32px;
+  color: var(--ion-color-primary);
+}
+.desc {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.info-row {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 6px;
+}
+.info-row ion-icon {
+  vertical-align: middle;
+  margin-right: 4px;
+}
+.fee-row { margin-top: 4px; }
+.fee {
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  font-size: 15px;
+}
+.fee.free { color: var(--ion-color-success); }
+.history-card {
+  margin-bottom: 12px;
+  border-radius: 10px;
+}
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.history-detail p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #555;
+}
+.history-detail ion-icon {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #aaa;
+}
+.fee-summary {
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin: 8px 0;
+}

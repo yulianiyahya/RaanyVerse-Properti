@@ -91,6 +91,13 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label>Foto Bukti (Opsional)</label>
+        <div class="input-wrapper" style="padding: 12px; display: flex; align-items: center;">
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" style="width: 100%; border: none; background: transparent; font-size: 14px; color: #3e342f;" />
+        </div>
+      </div>
+
       <button class="btn-submit" (click)="submit()">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="22" y1="2" x2="11" y2="13"></line>

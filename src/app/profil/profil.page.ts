@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-profil',
   templateUrl: './profil.page.html',
   styleUrls: ['./profil.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
+  providers: [ApiService],
 })
 export class ProfilPage implements OnInit {
   namaUser: string = '';
@@ -24,76 +27,84 @@ export class ProfilPage implements OnInit {
   showOld: boolean = false;
   showNew: boolean = false;
   showConfirm: boolean = false;
+  isLoading: boolean = false;
 
-  constructor(private router: Router, private location: Location) {}
+  constructor(private router: Router, private location: Location, private api: ApiService) {}
 
   ngOnInit() {
-    const emailLogin = localStorage.getItem('emailUser') || '';
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find((u: any) => u.email === emailLogin);
+    // Load from localStorage first for instant display
+    this.namaUser = localStorage.getItem('namaUser') || '';
+    this.emailUser = localStorage.getItem('emailUser') || '';
+    this.nama = this.namaUser;
+    this.email = this.emailUser;
 
-    if (user) {
-      this.nama = user.nama;
-      this.email = user.email;
-      this.noHp = user.noHp;
-      this.fotoUrl = user.foto || '';
-      this.namaUser = user.nama;
-      this.emailUser = user.email;
-    }
+    // Then fetch fresh data from API
+    this.api.getUser().subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.nama = res.name || this.nama;
+          this.email = res.email || this.email;
+          this.namaUser = this.nama;
+          this.emailUser = this.email;
+          localStorage.setItem('namaUser', this.nama);
+          localStorage.setItem('emailUser', this.email);
+        }
+      },
+      error: (err) => {
+        console.error('Gagal mengambil profil dari server:', err);
+      }
+    });
   }
 
   gantiFoto() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (e: any) => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (ev: any) => {
-        this.fotoUrl = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-    };
-    input.click();
+    alert('Fungsi ganti foto belum diimplementasikan.');
   }
 
   simpan() {
-    const emailLogin = localStorage.getItem('emailUser') || '';
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const index = users.findIndex((u: any) => u.email === emailLogin);
+    if (!this.nama || !this.email) {
+      alert('Nama dan email tidak boleh kosong!');
+      return;
+    }
 
-    if (index === -1) return;
-
-    // Update nama & noHp
-    users[index].nama = this.nama;
-    users[index].noHp = this.noHp;
-    users[index].foto = this.fotoUrl;
-
-    // Ganti password jika diisi
-    if (this.passwordLama || this.passwordBaru || this.passwordConfirm) {
-      if (users[index].password !== this.passwordLama) {
-        alert('Password lama tidak sesuai!');
-        return;
-      }
+    // Validate password if user wants to change it
+    if (this.passwordBaru || this.passwordConfirm) {
       if (this.passwordBaru !== this.passwordConfirm) {
         alert('Konfirmasi password tidak cocok!');
         return;
       }
-      if (this.passwordBaru.length < 6) {
-        alert('Password baru minimal 6 karakter!');
+      if (this.passwordBaru.length < 8) {
+        alert('Password baru minimal 8 karakter!');
         return;
       }
-      users[index].password = this.passwordBaru;
     }
 
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('namaUser', this.nama);
+    const payload: { name: string; email: string; password?: string } = {
+      name: this.nama,
+      email: this.email,
+    };
+    if (this.passwordBaru) {
+      payload.password = this.passwordBaru;
+    }
 
-    alert('Profil berhasil disimpan!');
-    this.namaUser = this.nama;
-    this.passwordLama = '';
-    this.passwordBaru = '';
-    this.passwordConfirm = '';
+    this.isLoading = true;
+    this.api.updateProfile(payload).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        localStorage.setItem('namaUser', this.nama);
+        localStorage.setItem('emailUser', this.email);
+        localStorage.setItem('user', JSON.stringify(res.user || {}));
+        this.namaUser = this.nama;
+        this.emailUser = this.email;
+        this.passwordBaru = '';
+        this.passwordConfirm = '';
+        alert('Profil berhasil disimpan!');
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        const msg = err.error?.message || 'Gagal menyimpan profil. Coba lagi.';
+        alert(msg);
+      }
+    });
   }
 
   goBack() {
@@ -101,8 +112,15 @@ export class ProfilPage implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('namaUser');
-    localStorage.removeItem('emailUser');
-    this.router.navigate(['/login']);
+    this.api.logout().subscribe({
+      next: () => {
+        localStorage.clear();
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        localStorage.clear();
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

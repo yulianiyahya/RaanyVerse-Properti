@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -47,20 +47,9 @@ export class RegisterPage {
         localStorage.setItem('auth_token', res.access_token);
         localStorage.setItem('namaUser', res.user.name);
         localStorage.setItem('emailUser', res.user.email);
-        
-        // Simpan data ke array 'users' di localStorage agar halaman profil bisa membaca noHp
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const exists = users.find((u: any) => u.email === res.user.email);
-        if (!exists) {
-          users.push({ nama: res.user.name, email: res.user.email, noHp: this.noHp, password: this.password });
-        } else {
-          const index = users.findIndex((u: any) => u.email === res.user.email);
-          users[index].nama = res.user.name;
-          users[index].noHp = this.noHp;
-          users[index].password = this.password;
-        }
-        localStorage.setItem('users', JSON.stringify(users));
-
+        // SECURITY: Never store passwords in localStorage.
+        // noHp is stored locally only since the backend User model does not have a phone field.
+        localStorage.setItem('noHp', this.noHp);
         localStorage.setItem('user', JSON.stringify(res.user));
         this.router.navigate(['/beranda-tenant']);
       },

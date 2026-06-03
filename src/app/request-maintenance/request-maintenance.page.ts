@@ -23,6 +23,7 @@ export class RequestMaintenancePage implements OnInit {
   lokasi: string = '';
   jadwal: string = '';
   minDate: string = '';
+  selectedImage: File | null = null;
 
   urgensiList = [
     { value: 'rendah', label: 'Rendah' },
@@ -40,6 +41,15 @@ export class RequestMaintenancePage implements OnInit {
     const today = new Date();
     this.minDate = today.toISOString().split('T')[0];
     this.loadMaintenances();
+  }
+
+  onFileSelected(event: any) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      this.selectedImage = files[0];
+    } else {
+      this.selectedImage = null;
+    }
   }
 
   loadMaintenances() {
@@ -134,7 +144,7 @@ export class RequestMaintenancePage implements OnInit {
     const fullDescription = `### PERBAIKAN ###\nJudul: ${this.judul}\nJenis: ${formattedJenis}\nUrgensi: ${this.urgensi}\nJadwal: ${this.jadwal}\nLokasi: ${this.lokasi || '-'}\nDeskripsi: ${this.deskripsi}`;
 
     this.isLoading = true;
-    this.api.createMaintenance(this.unitId, fullDescription).subscribe({
+    this.api.createMaintenance(this.unitId, fullDescription, this.selectedImage || undefined).subscribe({
       next: (res: any) => {
         this.isLoading = false;
         alert('Permintaan maintenance berhasil dikirim! Teknisi akan menghubungi kamu sesuai jadwal.');
@@ -145,6 +155,7 @@ export class RequestMaintenancePage implements OnInit {
         this.lokasi = '';
         this.jadwal = '';
         this.urgensi = 'sedang';
+        this.selectedImage = null;
         
         this.loadMaintenances();
       },
