@@ -1,9 +1,8 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -11,8 +10,7 @@ import { ApiService } from '../services/api.service';
   templateUrl: './fasilitas.page.html',
   styleUrls: ['./fasilitas.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class FasilitasPage implements OnInit {
   // Tab: 'katalog' | 'riwayat'

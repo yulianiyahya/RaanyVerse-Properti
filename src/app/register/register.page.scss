@@ -145,6 +145,21 @@
     }
   }
 
+  .privacy-disclaimer {
+    text-align: center;
+    font-size: 11px;
+    color: #9E8878;
+    margin-top: 12px;
+    line-height: 1.4;
+
+    a {
+      color: #C0622A;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+
   .version {
     text-align: center;
     font-size: 12px;

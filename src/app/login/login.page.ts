@@ -1,11 +1,10 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 declare var google: any;
@@ -15,8 +14,7 @@ declare var google: any;
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class LoginPage implements OnInit {
   email: string = '';
@@ -24,18 +22,24 @@ export class LoginPage implements OnInit {
   showPassword: boolean = false;
   isNative: boolean = false;
 
-  private CLIENT_ID = '788458855289-ll2lt1poim3b89aulqvql7qf2aaheida.apps.googleusercontent.com';
+  private CLIENT_ID = '359478724727-557h4ugugks06fb0ge6ciqebb6g5rl5n.apps.googleusercontent.com';
   isLoading: boolean = false;
 
   constructor(private router: Router, private api: ApiService) {}
 
   ngOnInit() {
+    // Jika user sudah login, langsung ke beranda-tenant
+    if (localStorage.getItem('auth_token')) {
+      this.router.navigate(['/beranda-tenant']);
+      return;
+    }
+
     this.isNative = Capacitor.isNativePlatform();
 
     if (this.isNative) {
       GoogleAuth.initialize({
         clientId: this.CLIENT_ID,
-        scopes: ['profile', 'email'],
+        scopes: ['profile', 'email', 'https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
       });
     } else {
       this.initGoogleSignIn();
@@ -75,8 +79,15 @@ export class LoginPage implements OnInit {
   handleGoogleResponse(response: any) {
     // response.credential is the raw Google ID token (JWT)
     const rawToken = response.credential;
-    const payload = JSON.parse(atob(rawToken.split('.')[1]));
-    this.saveUserAndNavigate(payload.name, payload.email, rawToken);
+    // Decode payload to extract name & email
+    try {
+      const payload = JSON.parse(atob(rawToken.split('.')[1]));
+      // Send to Laravel backend to get a real auth token
+      this.saveUserAndNavigate(payload.name || payload.email, payload.email, rawToken);
+    } catch (err) {
+      console.error('Gagal decode Google token:', err);
+      alert('Login Google gagal. Coba lagi.');
+    }
   }
 
   async loginWithGoogle() {
@@ -108,8 +119,18 @@ export class LoginPage implements OnInit {
       },
       error: (err: any) => {
         this.isLoading = false;
-        const msg = err.error?.message || 'Google login gagal disinkronkan ke server.';
-        alert(msg);
+        const status = err.status || 0;
+        const msg = err.error?.message || err.message || 'Tidak dapat terhubung ke server.';
+        // Tampilkan detail error untuk debugging
+        if (status === 0) {
+          alert('❌ Server tidak dapat dihubungi.\n\nPastikan Laravel sudah berjalan:\njalankan "php artisan serve"');
+        } else if (status === 403) {
+          alert('❌ Akun ini bukan tenant.\n\n' + msg);
+        } else if (status === 422) {
+          alert('❌ Data Google tidak valid:\n\n' + msg);
+        } else {
+          alert(`❌ Error ${status}:\n${msg}`);
+        }
       }
     });
   }

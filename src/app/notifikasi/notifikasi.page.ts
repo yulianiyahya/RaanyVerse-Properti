@@ -1,7 +1,6 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -9,8 +8,7 @@ import { ApiService } from '../services/api.service';
   templateUrl: './notifikasi.page.html',
   styleUrls: ['./notifikasi.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule],
 })
 export class NotifikasiPage implements OnInit {
   filterAktif: string = 'semua';

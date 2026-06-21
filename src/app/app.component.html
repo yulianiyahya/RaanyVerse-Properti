@@ -1,3 +1,9 @@
 <ion-app>
+  <div class="offline-banner" *ngIf="!isOnline">
+    <div class="offline-content">
+      <span class="icon">⚠️</span>
+      <span class="text">Anda sedang offline. Beberapa fitur mungkin tidak tersedia.</span>
+    </div>
+  </div>
   <ion-router-outlet></ion-router-outlet>
 </ion-app>

@@ -9,6 +9,7 @@ import {
   IonInput,
   IonButton,
   IonIcon,
+  IonSpinner,
   LoadingController,
   ToastController
 } from '@ionic/angular/standalone';
@@ -31,6 +32,7 @@ import emailjs from '@emailjs/browser';
     IonInput,
     IonButton,
     IonIcon,
+    IonSpinner,
   ],
 })
 export class ForgotPasswordPage {
@@ -39,6 +41,8 @@ export class ForgotPasswordPage {
   private SERVICE_ID  = 'service_inyj2li';
   private TEMPLATE_ID = 'template_54oyo3g';  // ← ganti yang ini
   private PUBLIC_KEY  = 'UhbfjTBTxU53qaghd';
+
+  isLoading = false;
 
   constructor(
     private router: Router,
@@ -49,24 +53,25 @@ export class ForgotPasswordPage {
   }
 
   async sendOtp() {
+    if (this.isLoading) return;
     if (!this.email) {
       this.showToast('Masukkan email kamu');
       return;
     }
 
-    // Cek apakah email terdaftar
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find((u: any) => u.email === this.email);
-    if (!user) {
-      this.showToast('Email tidak terdaftar');
+    // Validasi format email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email)) {
+      this.showToast('Format email tidak valid');
       return;
     }
 
-    const loading = await this.loadingCtrl.create({ message: 'Mengirim kode...' });
+    const loading = await this.loadingCtrl.create({ message: 'Mengirim kode OTP ke email...' });
     await loading.present();
+    this.isLoading = true;
 
-    // Generate OTP 4 digit
-    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+    // Generate OTP 6 digit
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     localStorage.setItem('resetOtp', otp);
     localStorage.setItem('resetEmail', this.email);
 
@@ -82,14 +87,17 @@ export class ForgotPasswordPage {
       );
 
       await loading.dismiss();
-      this.showToast('Kode verifikasi terkirim!');
+      this.isLoading = false;
+      this.showToast('Kode OTP berhasil dikirim ke email kamu!');
       this.router.navigate(['/verify-otp'], {
         queryParams: { email: this.email }
       });
 
     } catch (err) {
       await loading.dismiss();
-      this.showToast('Gagal mengirim kode. Coba lagi.');
+      this.isLoading = false;
+      this.showToast('Gagal mengirim kode. Periksa koneksi dan coba lagi.');
+      console.error('EmailJS error:', err);
     }
   }
 

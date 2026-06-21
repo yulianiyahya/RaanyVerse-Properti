@@ -1,13 +1,13 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'com.raanyverse.properti',
   appName: 'RaanyVerseProperty',
   webDir: 'www',
   plugins: {
   GoogleAuth: {
-    scopes: ['profile', 'email'],
-    serverClientId: '788458855289-ll2lt1poim3b89aulqvql7qf2aaheida.apps.googleusercontent.com',
+    scopes: ['profile', 'email', 'https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
+    serverClientId: '359478724727-557h4ugugks06fb0ge6ciqebb6g5rl5n.apps.googleusercontent.com',
     forceCodeForRefreshToken: true,
    },
   },

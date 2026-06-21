@@ -68,3 +68,21 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# =============================
+# SENSITIVE FILES - DO NOT PUSH
+# =============================
+
+# Android Keystore (file signing APK - RAHASIA!)
+*.jks
+*.keystore
+
+# Android local properties (path SDK lokal)
+android/local.properties
+
+# Google Services (berisi API key Google)
+google-services.json
+GoogleService-Info.plist
+
+# Environment files (berisi URL & config)
+# src/environments/environment.prod.ts  ← opsional, uncomment jika mau disembunyikan

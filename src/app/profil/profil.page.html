@@ -5,8 +5,9 @@
       <span>Kembali</span>
     </div>
     <span class="header-title">Profil Saya</span>
-    <div class="save-btn" (click)="simpan()">
-      <span>Simpan</span>
+    <div class="save-btn" (click)="simpan()" [class.disabled]="isLoading">
+      <ion-spinner name="crescent" *ngIf="isLoading" style="width: 14px; height: 14px; margin-right: 4px; color: #FFFFFF;"></ion-spinner>
+      <span>{{ isLoading ? '...' : 'Simpan' }}</span>
     </div>
   </div>
 </ion-header>
@@ -20,7 +21,7 @@
         <img *ngIf="fotoUrl" [src]="fotoUrl" alt="foto profil" />
         <ion-icon *ngIf="!fotoUrl" name="person-outline"></ion-icon>
       </div>
-      <div class="avatar-edit" (click)="gantiFoto()">
+      <div class="avatar-edit" (click)="gantiFoto()" [class.disabled]="isLoading">
         <ion-icon name="camera-outline"></ion-icon>
       </div>
     </div>
@@ -87,9 +88,25 @@
       </div>
     </div>
 
+    <div class="google-connection-section">
+      <p class="section-label">INTEGRASI KALENDER</p>
+      <div class="google-connect-card" (click)="hubungkanGoogle()" [class.connected]="googleConnected" [class.disabled]="isLoading">
+        <div class="card-left">
+          <ion-icon name="logo-google" class="google-icon"></ion-icon>
+          <div class="text-group">
+            <span class="card-title">Google Calendar</span>
+            <span class="card-desc">{{ googleConnected ? 'Sinkronisasi Otomatis Aktif' : 'Hubungkan untuk pengingat otomatis' }}</span>
+          </div>
+        </div>
+        <div class="card-right">
+          <ion-icon [name]="googleConnected ? 'checkmark-circle' : 'chevron-forward-outline'" [class.check]="googleConnected"></ion-icon>
+        </div>
+      </div>
+    </div>
+
     <div class="divider"></div>
 
-    <button class="btn-logout" (click)="logout()">
+    <button class="btn-logout" (click)="logout()" [disabled]="isLoading">
       <ion-icon name="log-out-outline"></ion-icon>
       <span>Keluar dari Akun</span>
     </button>

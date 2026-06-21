@@ -1,8 +1,7 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -10,8 +9,7 @@ import { ApiService } from '../services/api.service';
   templateUrl: './pengumuman.page.html',
   styleUrls: ['./pengumuman.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule],
 })
 export class PengumumanPage implements OnInit {
   pengumumanList: any[] = [];

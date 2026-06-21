@@ -28,7 +28,8 @@
     </div>
 
     <span class="badge-tersedia">
-      <span class="dot"></span> Tersedia
+      <span class="dot" [ngStyle]="{'background-color': unit?.status === 'tersedia' ? '#4CAF50' : (unit?.status === 'disewa' ? '#FFA726' : '#EF5350')}"></span> 
+      {{ unit?.status === 'tersedia' ? 'Tersedia' : (unit?.status === 'disewa' ? 'Disewa' : 'Perawatan') }}
     </span>
   </div>
 
@@ -60,8 +61,8 @@
       <h4 class="section-title">FASILITAS</h4>
       <div class="fasilitas-grid">
         <div class="fasilitas-item" *ngFor="let f of fasilitasList">
-          <span class="fasilitas-icon">{{ f.icon }}</span>
-          <span class="fasilitas-label">{{ f.label }}</span>
+          <ion-icon [name]="f.icon" class="fasilitas-ion-icon"></ion-icon>
+          <span class="fasilitas-label">{{ f.nama }}</span>
         </div>
       </div>
     </div>
@@ -88,6 +89,34 @@
       </div>
     </div>
 
+    <!-- Peringatan Unit Sedang Dipesan -->
+    <div class="occupied-warning-box" *ngIf="unit?.status === 'disewa' && !isMyUnit">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+        fill="none" stroke="#E65100" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+      <div class="warning-text-wrap">
+        <strong>Unit Sedang Disewa Orang Lain</strong>
+        <p>Kamu tetap bisa memesan unit ini untuk tanggal di masa depan. Pemesanan kamu akan masuk ke antrean dan memerlukan persetujuan admin.</p>
+      </div>
+    </div>
+
+    <!-- Peringatan Unit Sedang Menunggu Persetujuan Admin -->
+    <div class="pending-warning-box cannot-book-box" *ngIf="unit?.has_pending_booking && !isMyUnit">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+        fill="none" stroke="#D32F2F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div class="warning-text-wrap">
+        <strong>Unit Tidak Bisa Dipesan</strong>
+        <p>Unit ini tidak bisa dipesan karena ada permintaan sewa/pembelian yang belum di-approve oleh admin.</p>
+      </div>
+    </div>
+
     <div style="height: 100px;"></div>
 
   </div>
@@ -95,12 +124,12 @@
 </ion-content>
 
 <!-- Footer -->
-<div class="footer-pesan">
+<div class="footer-pesan" *ngIf="!isMyUnit">
   <div class="footer-harga">
     <p class="footer-label">Harga per Bulan</p>
     <p class="footer-amount">Rp {{ unit?.harga | number:'1.0-0' }}</p>
   </div>
-  <button class="btn-pesan" (click)="pesan()">
-    Pesan Unit Ini
+  <button class="btn-pesan" (click)="pesan()" [disabled]="unit?.has_pending_booking">
+    {{ unit?.has_pending_booking ? 'Tidak Tersedia' : 'Pesan Unit Ini' }}
   </button>
 </div>

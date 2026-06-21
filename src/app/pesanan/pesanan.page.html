@@ -68,15 +68,22 @@
         <p class="card-lokasi">{{ p.lokasi }}</p>
         <p class="card-harga">Rp {{ p.harga | number:'1.0-0' }}</p>
 
-        <div class="card-actions">
+        <div class="card-actions" style="display: flex; gap: 8px; align-items: center; justify-content: space-between; width: 100%;">
           <button
             *ngIf="p.status === 'menunggu'"
             class="btn-batal"
             (click)="batalPesanan(p.id)"
+            [disabled]="isLoading"
           >
             Batalkan
           </button>
-          <span *ngIf="p.status === 'disetujui'" class="info-disetujui">✓ Pesanan diterima</span>
+          <div *ngIf="p.status === 'disetujui'" style="display: flex; gap: 8px; align-items: center;">
+            <span class="info-disetujui">✓ Pesanan diterima</span>
+            <button class="btn-sync" (click)="syncKalender(p.id)" [disabled]="p.isSynced || isLoading" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid #10b981; background: #d1fae5; color: #065f46; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>{{ p.isSynced ? 'Synced' : 'Sync Calendar' }}</span>
+            </button>
+          </div>
           <span *ngIf="p.status === 'ditolak'" class="info-ditolak">✗ Pesanan ditolak</span>
         </div>
       </div>

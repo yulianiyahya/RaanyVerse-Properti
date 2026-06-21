@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -10,8 +9,7 @@ import { ApiService } from '../services/api.service';
   templateUrl: './request-maintenance.page.html',
   styleUrls: ['./request-maintenance.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class RequestMaintenancePage implements OnInit {
   punyaUnit: boolean = false;
@@ -88,8 +86,8 @@ export class RequestMaintenancePage implements OnInit {
                   urgensiLabel: urgensi.charAt(0).toUpperCase() + urgensi.slice(1),
                   lokasi: lokasi,
                   jadwal: jadwal,
-                  status: m.status === 'resolved' ? 'selesai' : 'menunggu',
-                  statusLabel: m.status === 'resolved' ? 'SELESAI' : 'MENUNGGU',
+                  status: m.status === 'approved' ? 'inprogress' : (m.status === 'completed' || m.status === 'resolved' ? 'completed' : (m.status === 'rejected' ? 'rejected' : 'pending')),
+                  statusLabel: m.status === 'approved' ? 'IN PROGRESS' : (m.status === 'completed' || m.status === 'resolved' ? 'COMPLETED' : (m.status === 'rejected' ? 'REJECTED' : 'PENDING')),
                   waktu: new Date(m.created_at).toLocaleDateString('id-ID', {
                     day: 'numeric', month: 'long', year: 'numeric'
                   })
@@ -108,6 +106,7 @@ export class RequestMaintenancePage implements OnInit {
   }
 
   submit() {
+    if (this.isLoading) return;
     if (!this.jenis) {
       alert('Pilih jenis perbaikan terlebih dahulu!');
       return;

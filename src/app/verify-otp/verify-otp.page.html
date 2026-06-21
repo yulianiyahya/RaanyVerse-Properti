@@ -9,12 +9,12 @@
     </div>
 
     <h2 class="rp-title">Verifikasi Email</h2>
-    <p class="rp-desc">Kode 4 digit telah dikirim ke <b>{{ email }}</b></p>
+    <p class="rp-desc">Kode 6 digit telah dikirim ke <b>{{ email }}</b></p>
 
     <!-- OTP Input -->
     <div class="otp-row">
       <input
-        *ngFor="let i of [0,1,2,3]"
+        *ngFor="let i of [0,1,2,3,4,5]"
         class="otp-box"
         type="tel"
         maxlength="1"
@@ -26,13 +26,16 @@
 
     <p class="resend-text">
       Tidak menerima kode?
-      <span class="resend-link" (click)="resend()" [class.disabled]="timerActive">
+      <span class="resend-link" (click)="resend()" [class.disabled]="timerActive || isLoading">
         Kirim ulang {{ timerActive ? '(' + timer + 's)' : '' }}
       </span>
     </p>
 
-    <button class="btn-verify" (click)="verifyOtp()">Verifikasi</button>
-    <button class="btn-ghost" (click)="goBack()">Kembali</button>
+    <button class="btn-verify" (click)="verifyOtp()" [disabled]="isLoading">
+      <ion-spinner name="crescent" *ngIf="isLoading" style="margin-right: 8px; width: 20px; height: 20px;"></ion-spinner>
+      {{ isLoading ? 'Memproses...' : 'Verifikasi' }}
+    </button>
+    <button class="btn-ghost" (click)="goBack()" [disabled]="isLoading">Kembali</button>
 
     <p class="rp-version">v1.0 · RaanyVerse</p>
   </div>

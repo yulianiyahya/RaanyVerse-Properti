@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package com.raanyverse.properti;
 
 import com.getcapacitor.BridgeActivity;
 

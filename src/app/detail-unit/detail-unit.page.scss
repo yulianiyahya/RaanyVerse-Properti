@@ -131,15 +131,22 @@
     align-items: center;
     gap: 6px;
     box-shadow: 0 2px 8px rgba(44, 26, 14, 0.07);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-    .fasilitas-icon {
-      font-size: 22px;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(192, 98, 42, 0.12);
+    }
+
+    .fasilitas-ion-icon {
+      font-size: 24px;
+      color: #C0622A;
     }
 
     .fasilitas-label {
       font-size: 10px;
       font-weight: 600;
-      color: #9E8878;
+      color: #2C1A0E;
       text-align: center;
     }
   }
@@ -224,6 +231,63 @@
 
     &:active {
       background: #A0521E;
+    }
+
+    &:disabled {
+      background: #B0BEC5 !important;
+      cursor: not-allowed !important;
+      opacity: 0.8;
+    }
+  }
+}
+
+.occupied-warning-box,
+.pending-warning-box {
+  display: flex;
+  gap: 12px;
+  background: #FFF3E0;
+  border: 1px solid #FFB74D;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-top: 20px;
+  align-items: flex-start;
+  box-shadow: 0 2px 8px rgba(230, 81, 0, 0.06);
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .warning-text-wrap {
+    text-align: left;
+    strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #E65100;
+      margin-bottom: 4px;
+    }
+
+    p {
+      font-size: 11px;
+      line-height: 1.5;
+      color: #E65100;
+      margin: 0;
+    }
+  }
+}
+
+.cannot-book-box {
+  background: #FFEBEE !important;
+  border: 1px solid #EF9A9A !important;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.06) !important;
+
+  .warning-text-wrap {
+    strong {
+      color: #C62828 !important;
+    }
+    p {
+      color: #D32F2F !important;
     }
   }
 }

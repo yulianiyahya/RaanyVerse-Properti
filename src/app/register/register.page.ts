@@ -1,9 +1,8 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -11,8 +10,7 @@ import { ApiService } from '../services/api.service';
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class RegisterPage {
   nama: string = '';
@@ -41,17 +39,11 @@ export class RegisterPage {
     }
 
     this.isLoading = true;
-    this.api.register(this.nama, this.email, this.password, this.confirmPassword).subscribe({
+    this.api.register(this.nama, this.email, this.noHp, this.password, this.confirmPassword).subscribe({
       next: (res: any) => {
         this.isLoading = false;
-        localStorage.setItem('auth_token', res.access_token);
-        localStorage.setItem('namaUser', res.user.name);
-        localStorage.setItem('emailUser', res.user.email);
-        // SECURITY: Never store passwords in localStorage.
-        // noHp is stored locally only since the backend User model does not have a phone field.
-        localStorage.setItem('noHp', this.noHp);
-        localStorage.setItem('user', JSON.stringify(res.user));
-        this.router.navigate(['/beranda-tenant']);
+        alert('Registrasi berhasil! Silakan masuk menggunakan akun Anda.');
+        this.router.navigate(['/login']);
       },
       error: (err: any) => {
         this.isLoading = false;
@@ -62,4 +54,5 @@ export class RegisterPage {
   }
 
   goToLogin() { this.router.navigate(['/login']); }
+  goToPrivacyPolicy() { this.router.navigate(['/privacy-policy']); }
 }

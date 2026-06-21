@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -11,8 +10,7 @@ import { ApiService } from '../services/api.service';
   templateUrl: './beranda-tenant.page.html',
   styleUrls: ['./beranda-tenant.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class BerandaTenantPage implements OnInit {
   namaUser: string = '';
@@ -60,6 +58,7 @@ export class BerandaTenantPage implements OnInit {
         if (res && res.length > 0) {
           const billing = res[0];
           this.unitData = {
+            id: billing.unit?.id,
             nama: billing.unit?.name || 'Unit Anda',
             jatuhTempo: billing.due_date ? new Date(billing.due_date).toLocaleDateString('id-ID', {
               day: 'numeric', month: 'long', year: 'numeric'
@@ -127,6 +126,17 @@ export class BerandaTenantPage implements OnInit {
     this.router.navigate(['/unit']);
   }
 
+  goToDetailUnit() {
+    if (this.unitData && this.unitData.id) {
+      localStorage.setItem('selectedUnit', JSON.stringify({
+        id: this.unitData.id,
+        nama: this.unitData.nama,
+        isMyUnit: true
+      }));
+      this.router.navigate(['/detail-unit']);
+    }
+  }
+
   goToPesanan() {
     this.router.navigate(['/pesanan']);
   }
@@ -158,6 +168,7 @@ export class BerandaTenantPage implements OnInit {
 
   logout() {
     this.menuOpen = false;
+    this.api.logoutGoogle();
     this.api.logout().subscribe({
       next: () => {
         localStorage.clear();

@@ -261,6 +261,27 @@ ion-header {
     gap: 10px;
 
     &:active { background: #A0521F; }
+
+    &:disabled {
+      background: #B0BEC5 !important;
+      cursor: not-allowed !important;
+      opacity: 0.8;
+    }
+  }
+}
+
+.cannot-book-box {
+  background: #FFEBEE !important;
+  border: 1px solid #EF9A9A !important;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.06) !important;
+
+  .warning-text-wrap {
+    strong {
+      color: #C62828 !important;
+    }
+    p {
+      color: #D32F2F !important;
+    }
   }
 }
 

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -11,8 +10,7 @@ import { ApiService } from '../services/api.service';
   templateUrl: './unit.page.html',
   styleUrls: ['./unit.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class UnitPage implements OnInit {
   searchQuery: string = '';
@@ -45,26 +43,42 @@ export class UnitPage implements OnInit {
   }
 
   loadUnits() {
+    const token = localStorage.getItem('auth_token');
+    console.log('[DEBUG] auth_token:', token ? '✅ ada (' + token.substring(0, 20) + '...)' : '❌ KOSONG / null');
+
     this.api.getUnits().subscribe({
       next: (res: any) => {
-        this.daftarUnit = (res || []).map((u: any) => {
+        console.log('[DEBUG] Response dari /api/units:', res);
+        const unitArray = Array.isArray(res) ? res : (res?.data || []);
+        this.daftarUnit = (unitArray || []).map((u: any) => {
+          // Map backend status to Indonesian labels
+          let statusLabel = 'tersedia';
+          if (u.status === 'occupied') statusLabel = 'disewa';
+          else if (u.status === 'maintenance') statusLabel = 'perawatan';
+          else if (u.status === 'available') statusLabel = 'tersedia';
+
           return {
             id: u.id,
             nama: u.name || 'Unit Tanpa Nama',
             lokasi: u.estate?.address || u.estate?.name || 'Lokasi tidak diketahui',
             harga: u.price || 0,
             rating: 4.8,
-            status: u.status === 'available' ? 'tersedia' : u.status,
+            status: statusLabel,
+            statusRaw: u.status, // keep original for reference
             tipe: u.type || 'standar',
-            gambar: u.image || 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80',
+            gambar: this.api.formatImageUrl(u.image) || 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80',
+            has_pending_booking: u.has_pending_booking || false,
           };
         });
+        console.log('[DEBUG] daftarUnit setelah mapping:', this.daftarUnit);
       },
       error: (err) => {
-        console.error('Gagal mengambil unit dari server:', err);
+        console.error('[DEBUG] ❌ Error /api/units - status:', err.status, '| message:', err.message);
+        console.error('[DEBUG] Error detail:', err.error);
       }
     });
   }
+
 
   loadFavorit() {
     this.favoritUnits = JSON.parse(localStorage.getItem('favoritUnit') || '[]');
@@ -76,6 +90,7 @@ export class UnitPage implements OnInit {
 
   logout() {
     this.menuOpen = false;
+    this.api.logoutGoogle();
     localStorage.clear();
     this.router.navigate(['/login']);
   }

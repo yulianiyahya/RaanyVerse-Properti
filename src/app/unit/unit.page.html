@@ -57,7 +57,8 @@
       <div class="unit-img-wrap">
         <img [src]="unit.gambar" [alt]="unit.nama" class="unit-img" />
         <span class="badge-tersedia">
-          <span class="dot"></span> Tersedia
+          <span class="dot" [ngStyle]="{'background-color': unit.status === 'tersedia' ? '#4CAF50' : (unit.status === 'disewa' ? '#FFA726' : '#EF5350')}"></span> 
+          {{ unit.status === 'tersedia' ? 'Tersedia' : (unit.status === 'disewa' ? 'Disewa' : 'Perawatan') }}
         </span>
       </div>
 

@@ -1,0 +1,240 @@
+.welcome-container {
+  --background: #f8fafc;
+  font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+.welcome-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 24px 20px 40px 20px;
+  box-sizing: border-box;
+}
+
+.header-action {
+  display: flex;
+  justify-content: flex-end;
+  height: 48px;
+  
+  .skip-btn {
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: none;
+    --color: #94a3b8;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+    
+    &:active {
+      --color: #475569;
+    }
+  }
+}
+
+.slider-viewport {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.slides-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+  flex-shrink: 0;
+}
+
+.slide-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.slide-image-wrapper {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+  
+  &.active-image {
+    .slide-image {
+      transform: scale(1);
+      opacity: 1;
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
+    }
+    .blob-1 {
+      animation: float 6s ease-in-out infinite;
+      opacity: 1;
+    }
+    .blob-2 {
+      animation: float-reverse 7s ease-in-out infinite;
+      opacity: 1;
+    }
+  }
+  
+  &:not(.active-image) {
+    .slide-image {
+      transform: scale(0.8);
+      opacity: 0.5;
+      transition: all 0.4s ease;
+    }
+    .blob {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+  }
+}
+
+.slide-image {
+  position: relative;
+  z-index: 10;
+  width: 240px;
+  height: 240px;
+  object-fit: contain;
+  border-radius: 24px;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.1));
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(15px);
+  z-index: 1;
+}
+
+.blob-1 {
+  width: 120px;
+  height: 120px;
+  top: 10%;
+  left: 10%;
+}
+
+.blob-2 {
+  width: 100px;
+  height: 100px;
+  bottom: 10%;
+  right: 15%;
+}
+
+@keyframes float {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(15px, -25px) scale(1.1); }
+  66% { transform: translate(-10px, 15px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes float-reverse {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(-15px, 25px) scale(1.1); }
+  66% { transform: translate(10px, -15px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.slide-content {
+  max-width: 320px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+  
+  &.active-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.3s;
+  }
+}
+
+.slide-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+
+.slide-desc {
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 400;
+}
+
+.bottom-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  z-index: 20;
+}
+
+.indicators {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  height: 10px;
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &.active {
+      width: 28px;
+      border-radius: 4px;
+    }
+  }
+}
+
+.action-btn-container {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-btn {
+  --border-radius: 16px;
+  --box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.15);
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: none;
+  height: 56px;
+  margin: 0;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.back-btn {
+  font-weight: 600;
+  font-size: 15px;
+  text-transform: none;
+  --color: #94a3b8;
+  height: 44px;
+  margin: 0;
+  transition: all 0.3s ease;
+  
+  &:active {
+    --color: #475569;
+  }
+}

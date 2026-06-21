@@ -63,7 +63,14 @@
         </div>
       </div>
 
-      <button class="btn-daftar" (click)="register()">Daftar Sekarang</button>
+      <button class="btn-daftar" (click)="register()" [disabled]="isLoading">
+        <ion-spinner name="crescent" *ngIf="isLoading" style="margin-right: 8px; width: 20px; height: 20px;"></ion-spinner>
+        {{ isLoading ? 'Memproses...' : 'Daftar Sekarang' }}
+      </button>
+
+      <p class="privacy-disclaimer">
+        Dengan mendaftar, Anda menyetujui <a (click)="goToPrivacyPolicy()">Kebijakan Privasi</a> kami.
+      </p>
 
       <p class="login-link">Sudah punya akun? <a (click)="goToLogin()">Masuk</a></p>
 

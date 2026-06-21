@@ -237,4 +237,68 @@ ion-header {
       background: #FFE0E0;
     }
   }
+
+  .google-connection-section {
+    margin: 24px 0 16px;
+
+    .google-connect-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1.5px solid #E0D8D0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:active {
+        transform: scale(0.98);
+      }
+
+      &.connected {
+        border-color: #4CAF50;
+        background: #F4FBF4;
+      }
+
+      .card-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .google-icon {
+          font-size: 24px;
+          color: #4285F4;
+        }
+
+        .text-group {
+          display: flex;
+          flex-direction: column;
+
+          .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2C1A0E;
+          }
+
+          .card-desc {
+            font-size: 11px;
+            color: #9E8878;
+            margin-top: 2px;
+          }
+        }
+      }
+
+      .card-right {
+        ion-icon {
+          font-size: 20px;
+          color: #9E8878;
+
+          &.check {
+            color: #4CAF50;
+          }
+        }
+      }
+    }
+  }
 }

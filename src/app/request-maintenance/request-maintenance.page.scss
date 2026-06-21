@@ -257,9 +257,10 @@ ion-header {
         border-radius: 20px;
         flex-shrink: 0;
 
-        &.menunggu { background: #E3F2FD; color: #1976D2; }
-        &.proses { background: #FFF3E0; color: #C0622A; }
-        &.selesai { background: #E8F5E9; color: #4CAF50; }
+        &.pending { background: #FFF3E0; color: #C0622A; }
+        &.inprogress { background: #E3F2FD; color: #1E88E5; }
+        &.completed { background: #E8F5E9; color: #4CAF50; }
+        &.rejected { background: #FFEBEE; color: #FF6B6B; }
       }
     }
 

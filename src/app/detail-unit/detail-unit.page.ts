@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -10,13 +9,13 @@ import { ApiService } from '../services/api.service';
   templateUrl: './detail-unit.page.html',
   styleUrls: ['./detail-unit.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule],
 })
 export class DetailUnitPage implements OnInit {
   unit: any = null;
   isFavorit: boolean = false;
   isLoading: boolean = false;
+  isMyUnit: boolean = false;
   fasilitasList: any[] = [
     { icon: 'wifi-outline', nama: 'WiFi' },
     { icon: 'snow-outline', nama: 'AC' },
@@ -32,6 +31,8 @@ export class DetailUnitPage implements OnInit {
     this.unit = data ? JSON.parse(data) : null;
 
     if (this.unit) {
+      this.isMyUnit = !!this.unit.isMyUnit;
+
       // Check favorite status
       const favorit = JSON.parse(localStorage.getItem('favoritUnit') || '[]');
       this.isFavorit = favorit.some((f: any) => f.id === this.unit.id);
@@ -47,13 +48,14 @@ export class DetailUnitPage implements OnInit {
             id: res.id,
             nama: res.name || this.unit.nama,
             harga: res.price || this.unit.harga,
-            status: res.status === 'available' ? 'tersedia' : res.status,
+            status: res.status === 'available' ? 'tersedia' : (res.status === 'occupied' ? 'disewa' : (res.status === 'maintenance' ? 'perawatan' : res.status)),
             tipe: res.type || this.unit.tipe,
-            gambar: res.image || this.unit.gambar,
+            gambar: this.api.formatImageUrl(res.image) || this.unit.gambar,
             blok: res.blok || '',
             nomor_unit: res.nomor_unit || '',
             property_type: res.property_type || '',
             lokasi: res.estate?.address || res.estate?.name || this.unit.lokasi,
+            has_pending_booking: res.has_pending_booking || false,
           };
           // Update localStorage with fresh data
           localStorage.setItem('selectedUnit', JSON.stringify(this.unit));

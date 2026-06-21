@@ -12,7 +12,10 @@
 /* @import '@ionic/angular/css/palettes/dark.system.css'; */
 
 body,
-ion-app,
+ion-app {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
 p, span, div,
 h1, h2, h3, h4, h5, h6,
 input, textarea, select, button {
@@ -26,3 +29,49 @@ ion-content {
 }
 
 // HAPUS ion-router-outlet { overflow: auto } → konflik dengan scroll Ionic native
+
+/* Interactive Responsiveness for Buttons & Clickable elements */
+button, 
+.btn-submit, 
+.btn-daftar, 
+.btn-verify, 
+.btn-save, 
+.btn-masuk, 
+.btn-google, 
+.btn-bayar, 
+.btn-pesan, 
+.btn-detail, 
+.btn-download, 
+.btn-copy, 
+.btn-kembali, 
+.back-btn, 
+.bookmark-btn, 
+.nav-item, 
+.avatar-edit, 
+.google-connect-card, 
+.save-btn, 
+.resend-link,
+.filter-chip,
+.dropdown-item,
+.header-right,
+.icon-btn,
+.lihat-rincian,
+.aksi-item,
+.tab-item {
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  
+  &:active {
+    transform: scale(0.96) !important;
+    opacity: 0.8 !important;
+  }
+  
+  &[disabled], 
+  &.disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    pointer-events: none !important;
+  }
+}

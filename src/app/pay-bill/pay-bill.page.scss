@@ -151,6 +151,22 @@ ion-header {
           color: #4CAF50;
         }
       }
+
+      .btn-download {
+        background: transparent;
+        border: none;
+        padding: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+        
+        &:active {
+          background-color: rgba(76, 175, 80, 0.1);
+        }
+      }
     }
   }
 }
@@ -316,6 +332,110 @@ ion-header {
 
     &:active {
       background: #A0521E;
+    }
+  }
+}
+
+.instruksi-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(44, 26, 14, 0.07);
+
+  .instruksi-info {
+    font-size: 13px;
+    color: #2C1A0E;
+    margin: 0 0 12px;
+    line-height: 1.5;
+  }
+
+  .bank-account {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FAF8F5;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px dashed #E0DCD6;
+
+    .bank-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      .bank-name {
+        font-size: 11px;
+        font-weight: 700;
+        color: #C0622A;
+        text-transform: uppercase;
+      }
+
+      .account-number {
+        font-size: 16px;
+        font-weight: 800;
+        color: #2C1A0E;
+        letter-spacing: 0.5px;
+      }
+
+      .account-holder {
+        font-size: 12px;
+        color: #9E8878;
+      }
+    }
+
+    .btn-copy {
+      background: #FAF8F5;
+      color: #C0622A;
+      border: 1.5px solid #C0622A;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+
+      &:active {
+        background: #C0622A;
+        color: #FFFFFF;
+      }
+    }
+  }
+
+  .cash-instruction {
+    background: #FAF8F5;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #9E8878;
+    line-height: 1.6;
+
+    p {
+      margin: 0 0 6px;
+      &:last-child {
+        margin: 0;
+      }
+    }
+  }
+
+  .instruksi-note {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 10px;
+    background: #FFF8F4;
+    border-radius: 10px;
+    align-items: flex-start;
+
+    svg {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    span {
+      font-size: 11px;
+      color: #9E8878;
+      line-height: 1.5;
     }
   }
 }

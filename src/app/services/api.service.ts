@@ -1,15 +1,63 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Capacitor } from '@capacitor/core';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+
+declare var google: any;
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = environment.apiUrl;
+  public apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
+
+  formatImageUrl(url: string | null): string {
+    if (!url) return '';
+    if (url.startsWith('data:')) return url;
+    
+    // Cloudinary URL
+    if (url.includes('cloudinary.com') || url.includes('res.cloudinary.com')) {
+      return url;
+    }
+    
+    // Local storage path resolving against actual backend host
+    if (url.includes('/storage/')) {
+      const parts = url.split('/storage/');
+      const storagePath = '/storage/' + parts[parts.length - 1];
+      const baseUrl = this.apiUrl.replace('/api', '');
+      return `${baseUrl}${storagePath}`;
+    }
+    
+    // Relative path resolving
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      const baseUrl = this.apiUrl.replace('/api', '');
+      return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+    }
+    
+    return url;
+  }
+
+  async logoutGoogle(): Promise<void> {
+    if (Capacitor.isNativePlatform()) {
+      try {
+        await GoogleAuth.signOut();
+      } catch (err) {
+        console.error('Error signing out from Capacitor Google Auth:', err);
+      }
+    } else {
+      try {
+        if (typeof google !== 'undefined' && google.accounts?.id) {
+          google.accounts.id.disableAutoSelect();
+        }
+      } catch (err) {
+        console.error('Error disabling auto-select on Google Identity Services:', err);
+      }
+    }
+  }
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('auth_token');
@@ -36,8 +84,8 @@ export class ApiService {
     });
   }
 
-  register(name: string, email: string, password: string, password_confirmation: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, { name, email, password, password_confirmation }, {
+  register(name: string, email: string, phone: string, password: string, password_confirmation: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, { name, email, phone, password, password_confirmation }, {
       headers: new HttpHeaders({ 'Accept': 'application/json', 'Content-Type': 'application/json' })
     });
   }
@@ -56,9 +104,26 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/user`, { headers: this.getHeaders() });
   }
 
-  updateProfile(data: { name: string; email: string; password?: string }): Observable<any> {
+  updateProfile(data: { name: string; email: string; phone?: string; password?: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/profile`, data, { headers: this.getHeaders() });
   }
+
+  updateProfilePhoto(base64DataUri: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/profile/photo`, { photo: base64DataUri }, { headers: this.getHeaders() });
+  }
+
+  updateForgotPassword(email: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/forgot-password/reset`, { email, password: newPassword }, {
+      headers: new HttpHeaders({ 'Accept': 'application/json', 'Content-Type': 'application/json' })
+    });
+  }
+
+  connectGoogle(googleIdToken: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/profile/connect-google`, { google_id_token: googleIdToken }, {
+      headers: this.getHeaders()
+    });
+  }
+
 
   // ===== UNITS =====
   getUnits(): Observable<any> {
@@ -74,11 +139,26 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/bookings`, { headers: this.getHeaders() });
   }
 
-  createBooking(unitId: number, startDate: string, endDate: string, ktpFile?: File): Observable<any> {
+  createBooking(
+    unitId: number, 
+    startDate: string, 
+    endDate: string, 
+    paymentType: string,
+    durationMonths: number,
+    dpAmount: number,
+    dueDay: number | null,
+    ktpFile?: File
+  ): Observable<any> {
     const formData = new FormData();
     formData.append('unit_id', unitId.toString());
     formData.append('start_date', startDate);
     formData.append('end_date', endDate);
+    formData.append('payment_type', paymentType);
+    formData.append('duration_months', durationMonths.toString());
+    formData.append('dp_amount', dpAmount.toString());
+    if (dueDay !== null && dueDay !== undefined) {
+      formData.append('due_day', dueDay.toString());
+    }
     if (ktpFile) {
       formData.append('ktp', ktpFile, ktpFile.name);
     }
@@ -100,6 +180,17 @@ export class ApiService {
 
   payBilling(billingId: number, type: string = 'full'): Observable<any> {
     return this.http.post(`${this.apiUrl}/billings/${billingId}/pay`, { type }, { headers: this.getHeaders() });
+  }
+
+  downloadReceipt(billingId: number): Observable<Blob> {
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get(`${this.apiUrl}/billings/${billingId}/receipt`, {
+      headers: headers,
+      responseType: 'blob'
+    });
   }
 
   // ===== COMPLAINTS =====

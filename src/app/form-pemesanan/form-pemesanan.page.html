@@ -45,10 +45,51 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">Durasi Sewa</label>
+        <label class="form-label">Tipe Pembayaran</label>
+        <div class="input-wrap select-wrap">
+          <select [(ngModel)]="paymentType" (change)="updateDurasiList()" class="form-select">
+            <option value="sewa">Sewa (Bulanan)</option>
+            <option value="cicilan">Cicilan (Kepemilikan Unit)</option>
+          </select>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="#9E8878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">{{ paymentType === 'cicilan' ? 'Durasi Cicilan' : 'Durasi Sewa' }}</label>
         <div class="input-wrap select-wrap">
           <select [(ngModel)]="durasi" class="form-select">
             <option *ngFor="let d of durasiList" [value]="d.value">{{ d.label }}</option>
+          </select>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="#9E8878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">DP Awal (Down Payment)</label>
+        <div class="input-wrap">
+          <input
+            type="number"
+            [(ngModel)]="dpAmount"
+            class="form-input"
+            placeholder="Masukkan nominal DP awal jika ada (Rp)"
+            min="0"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tanggal Jatuh Tempo Bulanan</label>
+        <div class="input-wrap select-wrap">
+          <select [(ngModel)]="dueDay" class="form-select">
+            <option [ngValue]="null">Pilih Jatuh Tempo (Default: Tanggal Mulai)</option>
+            <option *ngFor="let day of dueDayList" [value]="day">Setiap Tanggal {{ day }}</option>
           </select>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
             fill="none" stroke="#9E8878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -92,6 +133,20 @@
 
     </div>
 
+    <!-- Peringatan Unit Sedang Menunggu Persetujuan Admin -->
+    <div class="pending-warning-box cannot-book-box" *ngIf="unit?.has_pending_booking" style="display: flex; gap: 12px; border-radius: 14px; padding: 14px 16px; margin-bottom: 20px; align-items: flex-start;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+        fill="none" stroke="#D32F2F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div class="warning-text-wrap" style="text-align: left;">
+        <strong style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px;">Unit Tidak Bisa Dipesan</strong>
+        <p style="font-size: 11px; line-height: 1.5; margin: 0;">Unit tidak bisa dipesan karena saat ini ada permintaan sewa/pembelian yang belum di-approve oleh admin.</p>
+      </div>
+    </div>
+
     <!-- Info Persetujuan -->
     <div class="info-box">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -108,12 +163,16 @@
       <h4 class="estimasi-title">RINCIAN ESTIMASI</h4>
 
       <div class="estimasi-row">
-        <span>Sewa {{ durasi }} Bulan</span>
-        <span>Rp {{ getTotalEstimasi() | number:'1.0-0' }}</span>
+        <span>{{ paymentType === 'cicilan' ? 'Harga Unit' : 'Sewa ' + durasi + ' Bulan' }}</span>
+        <span>Rp {{ getTotalHarga() | number:'1.0-0' }}</span>
       </div>
-      <div class="estimasi-row">
-        <span>Deposit ({{ getDepositLabel() }} bulan)</span>
+      <div class="estimasi-row" *ngIf="paymentType === 'sewa'">
+        <span>Deposit (Jaminan)</span>
         <span>Rp {{ getDeposit() | number:'1.0-0' }}</span>
+      </div>
+      <div class="estimasi-row" *ngIf="dpAmount > 0">
+        <span>DP Awal (Down Payment)</span>
+        <span>Rp {{ dpAmount | number:'1.0-0' }}</span>
       </div>
       <div class="estimasi-divider"></div>
       <div class="estimasi-row">
@@ -123,10 +182,15 @@
 
       <div class="estimasi-highlight">
         <div class="estimasi-row total">
-          <span>Dibayar di Awal</span>
-          <span>Rp {{ getBayarDiAwal() | number:'1.0-0' }}</span>
+          <span>{{ paymentType === 'cicilan' ? 'Cicilan per Bulan' : 'Rata-rata per Bulan' }}</span>
+          <span>Rp {{ getCicilanBulanan() | number:'1.0-0' }}</span>
         </div>
-        <p class="estimasi-note">Bulan pertama + deposit {{ getDepositLabel() }} bulan</p>
+        <p class="estimasi-note" *ngIf="paymentType === 'sewa'">
+          Dicicil {{ durasi }} bulan (setiap bulan sebesar Rp {{ getCicilanBulanan() | number:'1.0-0' }})
+        </p>
+        <p class="estimasi-note" *ngIf="paymentType === 'cicilan'">
+          Dicicil {{ durasi }} bulan (setiap bulan sebesar Rp {{ getCicilanBulanan() | number:'1.0-0' }})
+        </p>
       </div>
     </div>
 
@@ -138,7 +202,8 @@
 
 <!-- Footer -->
 <div class="footer-submit">
-  <button class="btn-submit" (click)="submitPesanan()">
-    Kirim Pesanan
+  <button class="btn-submit" (click)="submitPesanan()" [disabled]="isLoading || unit?.has_pending_booking">
+    <ion-spinner name="crescent" *ngIf="isLoading" style="margin-right: 8px; width: 20px; height: 20px; color: #FFFFFF;"></ion-spinner>
+    {{ isLoading ? 'Memproses...' : (unit?.has_pending_booking ? 'Tidak Tersedia' : 'Kirim Pesanan') }}
   </button>
 </div>

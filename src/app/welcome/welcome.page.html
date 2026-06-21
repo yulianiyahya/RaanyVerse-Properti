@@ -1,0 +1,64 @@
+<ion-content [fullscreen]="true" class="welcome-container">
+  <div class="welcome-wrapper">
+    <!-- Skip Button -->
+    <div class="header-action" *ngIf="activeSlide < slides.length - 1">
+      <ion-button fill="clear" color="medium" class="skip-btn" (click)="finishOnboarding()">
+        Lewati
+      </ion-button>
+    </div>
+
+    <!-- Sliders Area -->
+    <div class="slider-viewport">
+      <div class="slides-track" [style.transform]="'translateX(' + (-activeSlide * (100 / slides.length)) + '%)'" [style.width]="(slides.length * 100) + '%'">
+        <div class="slide-item" *ngFor="let slide of slides; let i = index" [style.width]="(100 / slides.length) + '%'">
+          <div class="slide-image-wrapper" [class.active-image]="activeSlide === i">
+            <img [src]="slide.image" [alt]="slide.title" class="slide-image" />
+            <!-- Decorative elements -->
+            <div class="blob blob-1" [style.background]="slide.color + '30'"></div>
+            <div class="blob blob-2" [style.background]="slide.color + '20'"></div>
+          </div>
+          
+          <div class="slide-content" [class.active-content]="activeSlide === i">
+            <h1 class="slide-title">{{ slide.title }}</h1>
+            <p class="slide-desc">{{ slide.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="bottom-controls">
+      <!-- Indicators -->
+      <div class="indicators">
+        <div 
+          *ngFor="let slide of slides; let idx = index" 
+          class="dot" 
+          [class.active]="idx === activeSlide"
+          [style.background]="idx === activeSlide ? slide.gradient : '#e2e8f0'"
+          (click)="setSlide(idx)">
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="action-btn-container">
+        <ion-button 
+          expand="block" 
+          class="action-btn"
+          [style.--background]="slides[activeSlide].gradient"
+          (click)="nextSlide()">
+          {{ activeSlide === slides.length - 1 ? 'Mulai Sekarang' : 'Lanjut' }}
+          <ion-icon name="arrow-forward-outline" slot="end" *ngIf="activeSlide < slides.length - 1"></ion-icon>
+        </ion-button>
+        
+        <ion-button 
+          fill="clear" 
+          color="medium" 
+          class="back-btn"
+          [style.visibility]="activeSlide > 0 ? 'visible' : 'hidden'"
+          (click)="prevSlide()">
+          Kembali
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

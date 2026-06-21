@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">RaanyVerseProperty</string>
     <string name="title_activity_main">RaanyVerseProperty</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
-    <string name="server_client_id">788458855289-ll2lt1poim3b89aulqvql7qf2aaheida.apps.googleusercontent.com</string>
+    <string name="package_name">com.raanyverse.properti</string>
+    <string name="custom_url_scheme">com.raanyverse.properti</string>
+    <string name="server_client_id">359478724727-557h4ugugks06fb0ge6ciqebb6g5rl5n.apps.googleusercontent.com</string>
 </resources>

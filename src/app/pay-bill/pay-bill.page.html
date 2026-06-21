@@ -1,7 +1,8 @@
 <ion-header class="ion-no-border">
   <div class="paybill-header">
     <div class="back-btn" (click)="goBack()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
       <span>Kembali</span>
@@ -16,7 +17,8 @@
   <!-- FIX: wrapper full-height agar empty state bisa di-center -->
   <div class="empty-wrapper" *ngIf="!punyaUnit">
     <div class="empty-unit-state">
-      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#C4B8AE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#C4B8AE"
+        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
         <line x1="1" y1="10" x2="23" y2="10"></line>
       </svg>
@@ -34,7 +36,8 @@
       <p class="summary-label">TOTAL TAGIHAN BULAN INI</p>
       <h2 class="summary-amount">Rp {{ totalTagihan | number:'1.0-0' }}</h2>
       <p class="summary-due">
-        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+          stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
           <line x1="16" y1="2" x2="16" y2="6"></line>
           <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -55,7 +58,16 @@
           </div>
           <div class="tagihan-right">
             <span class="tagihan-nominal">Rp {{ item.nominal | number:'1.0-0' }}</span>
-            <span class="badge-status" [ngClass]="item.status">{{ item.statusLabel }}</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span class="badge-status" [ngClass]="item.status">{{ item.statusLabel }}</span>
+              <button *ngIf="item.rawStatus === 'paid'" class="btn-download" (click)="downloadKuitansi(item)" title="Unduh Kuitansi" [disabled]="isLoading">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -65,12 +77,8 @@
     <div class="section">
       <h4 class="section-title">METODE PEMBAYARAN</h4>
       <div class="metode-list">
-        <div
-          class="metode-item"
-          *ngFor="let m of metodeList"
-          [class.selected]="metodeTerpilih === m.id"
-          (click)="metodeTerpilih = m.id"
-        >
+        <div class="metode-item" *ngFor="let m of metodeList" [class.selected]="metodeTerpilih === m.id"
+          (click)="metodeTerpilih = m.id">
           <div class="metode-icon">{{ m.icon }}</div>
           <div class="metode-info">
             <p class="metode-nama">{{ m.nama }}</p>
@@ -79,6 +87,58 @@
           <div class="metode-radio">
             <div class="radio-inner" *ngIf="metodeTerpilih === m.id"></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instruksi Pembayaran (Muncul Dinamis) -->
+    <div class="section" *ngIf="metodeTerpilih">
+      <h4 class="section-title">INSTRUKSI PEMBAYARAN</h4>
+      <div class="instruksi-card">
+
+        <!-- Transfer Bank -->
+        <ng-container *ngIf="metodeTerpilih === 'transfer'">
+          <p class="instruksi-info">Silakan lakukan transfer bank ke salah satu rekening berikut:</p>
+          <div class="bank-account">
+            <div class="bank-details">
+              <span class="bank-name">Bank BNI</span>
+              <span class="account-number">1974706113</span>
+              <span class="account-holder">a.n. PT RaanyVerse Properti</span>
+            </div>
+            <button class="btn-copy" (click)="salinTeks('1974706113')">Salin No. Rek</button>
+          </div>
+        </ng-container>
+
+        <!-- E-Wallet -->
+        <ng-container *ngIf="metodeTerpilih === 'ewallet'">
+          <p class="instruksi-info">Silakan kirim pembayaran ke nomor E-Wallet Admin berikut:</p>
+          <div class="bank-account">
+            <div class="bank-details">
+              <span class="bank-name">Dana / OVO / GoPay / ShopeePay</span>
+              <span class="account-number">089601784887</span>
+              <span class="account-holder">a.n. RaanyVerse Properti Admin</span>
+            </div>
+            <button class="btn-copy" (click)="salinTeks('089601784887')">Salin Nomor</button>
+          </div>
+        </ng-container>
+
+        <!-- Tunai -->
+        <ng-container *ngIf="metodeTerpilih === 'tunai'">
+          <p class="instruksi-info">Silakan kunjungi kantor pengelola properti untuk melakukan pembayaran langsung.</p>
+          <div class="cash-instruction">
+            <p><strong>Alamat Kantor:</strong> Lantai G, Gedung Utama RaanyVerse Properti.</p>
+            <p>Harap bawa nama unit hunian Anda untuk divalidasi oleh petugas admin kami.</p>
+          </div>
+        </ng-container>
+
+        <div class="instruksi-note">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="#C0622A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>Setelah membayar, harap klik tombol di bawah untuk mengirim bukti transfer ke WhatsApp Admin.</span>
         </div>
       </div>
     </div>
@@ -96,6 +156,6 @@
     <p class="footer-amount">Rp {{ totalTagihan | number:'1.0-0' }}</p>
   </div>
   <button class="btn-bayar" (click)="bayar()">
-    Bayar Sekarang
+    Konfirmasi via WhatsApp
   </button>
 </div>

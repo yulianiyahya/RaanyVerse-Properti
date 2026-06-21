@@ -1,9 +1,8 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -11,8 +10,7 @@ import { ApiService } from '../services/api.service';
   templateUrl: './pesanan.page.html',
   styleUrls: ['./pesanan.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class PesananPage implements OnInit {
   filterAktif: string = 'semua';
@@ -52,7 +50,7 @@ export class PesananPage implements OnInit {
             nama: p.unit?.name || 'Unit Properti',
             lokasi: p.unit?.estate?.address || p.unit?.estate?.name || 'Lokasi tidak diketahui',
             harga: p.unit?.price || 0,
-            gambar: p.unit?.image || 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80',
+            gambar: this.api.formatImageUrl(p.unit?.image) || 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80',
             tanggal: new Date(p.start_date).toLocaleDateString('id-ID', {
               day: '2-digit', month: 'short', year: 'numeric'
             }),
@@ -78,14 +76,18 @@ export class PesananPage implements OnInit {
   }
 
   batalPesanan(id: number) {
+    if (this.isLoading) return;
     if (!confirm('Yakin ingin membatalkan pesanan ini? Hanya pesanan yang masih menunggu yang bisa dibatalkan.')) return;
 
+    this.isLoading = true;
     this.api.cancelBooking(id).subscribe({
       next: () => {
+        this.isLoading = false;
         alert('Pesanan berhasil dibatalkan.');
         this.loadPesanan();
       },
       error: (err: any) => {
+        this.isLoading = false;
         const msg = err.error?.message || 'Gagal membatalkan pesanan.';
         alert(msg);
       }
@@ -93,12 +95,16 @@ export class PesananPage implements OnInit {
   }
 
   syncKalender(id: number) {
+    if (this.isLoading) return;
+    this.isLoading = true;
     this.api.syncCalendar(id).subscribe({
       next: (res: any) => {
+        this.isLoading = false;
         alert(res.message || 'Berhasil disinkronkan ke Google Calendar!');
         this.loadPesanan();
       },
       error: (err: any) => {
+        this.isLoading = false;
         const msg = err.error?.message || 'Gagal sinkronisasi kalender.';
         alert(msg);
       }

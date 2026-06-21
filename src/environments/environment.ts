@@ -1,10 +1,11 @@
-﻿// This file can be replaced during build by using the `fileReplacements` array.
+// This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
   production: false,
-  // Backend aktif di port 8000 untuk saat ini
+  // Untuk browser dev (ionic serve): gunakan 127.0.0.1
+  // Untuk testing di Android device via WiFi: ganti ke IP lokal (misal 192.168.1.38)
   apiUrl: 'http://127.0.0.1:8000/api'
 };
 

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -10,8 +9,7 @@ import { ApiService } from '../services/api.service';
   templateUrl: './submit-complaint.page.html',
   styleUrls: ['./submit-complaint.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
-  providers: [ApiService],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class SubmitComplaintPage implements OnInit {
   punyaUnit: boolean = false;
@@ -80,8 +78,8 @@ export class SubmitComplaintPage implements OnInit {
                   kategori: kategori,
                   prioritas: prioritas,
                   lokasi: lokasi,
-                  status: c.status === 'resolved' ? 'selesai' : 'proses',
-                  statusLabel: c.status === 'resolved' ? 'SELESAI' : 'DIPROSES',
+                  status: c.status === 'approved' ? 'inprogress' : (c.status === 'completed' || c.status === 'resolved' ? 'completed' : (c.status === 'rejected' ? 'rejected' : 'pending')),
+                  statusLabel: c.status === 'approved' ? 'IN PROGRESS' : (c.status === 'completed' || c.status === 'resolved' ? 'COMPLETED' : (c.status === 'rejected' ? 'REJECTED' : 'PENDING')),
                   waktu: new Date(c.created_at).toLocaleDateString('id-ID', {
                     day: 'numeric', month: 'long', year: 'numeric'
                   })
@@ -100,6 +98,7 @@ export class SubmitComplaintPage implements OnInit {
   }
 
   submit() {
+    if (this.isLoading) return;
     if (!this.kategori) {
       alert('Pilih kategori keluhan terlebih dahulu!');
       return;
