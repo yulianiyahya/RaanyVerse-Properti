@@ -124,6 +124,12 @@ export class ApiService {
     });
   }
 
+  connectGoogleWithCode(code: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/profile/connect-google`, { code }, {
+      headers: this.getHeaders()
+    });
+  }
+
 
   // ===== UNITS =====
   getUnits(): Observable<any> {

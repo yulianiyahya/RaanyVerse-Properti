@@ -117,6 +117,20 @@
       </div>
     </div>
 
+    <!-- Peringatan Unit Sedang Perawatan -->
+    <div class="pending-warning-box cannot-book-box" *ngIf="unit?.status === 'perawatan' && !isMyUnit">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+        fill="none" stroke="#D32F2F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div class="warning-text-wrap">
+        <strong>Unit Dalam Perawatan</strong>
+        <p>Unit ini sedang dalam masa perawatan/perbaikan dan tidak bisa dipesan untuk sementara waktu.</p>
+      </div>
+    </div>
+
     <div style="height: 100px;"></div>
 
   </div>
@@ -129,7 +143,7 @@
     <p class="footer-label">Harga per Bulan</p>
     <p class="footer-amount">Rp {{ unit?.harga | number:'1.0-0' }}</p>
   </div>
-  <button class="btn-pesan" (click)="pesan()" [disabled]="unit?.has_pending_booking">
-    {{ unit?.has_pending_booking ? 'Tidak Tersedia' : 'Pesan Unit Ini' }}
+  <button class="btn-pesan" (click)="pesan()" [disabled]="unit?.has_pending_booking || unit?.status === 'perawatan'">
+    {{ unit?.has_pending_booking || unit?.status === 'perawatan' ? 'Tidak Tersedia' : 'Pesan Unit Ini' }}
   </button>
 </div>

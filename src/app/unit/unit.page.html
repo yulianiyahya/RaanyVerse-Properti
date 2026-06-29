@@ -8,12 +8,7 @@
       </svg>
       <span class="header-title">Unit Tersedia</span>
     </div>
-    <div class="header-right" (click)="goToNotifikasi()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-      </svg>
-    </div>
+    <div class="header-right"></div>
   </div>
 
   <div class="dropdown-menu" *ngIf="menuOpen">
@@ -28,7 +23,7 @@
   </div>
 </ion-header>
 
-<ion-content class="unit-content" scrollY="true">
+<ion-content class="unit-content" scrollY="true" fullscreen="true">
 
   <div class="search-wrap">
     <div class="search-box">
@@ -36,7 +31,7 @@
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
-      <input type="text" [(ngModel)]="searchQuery" placeholder="Cari unit atau lokasi..." />
+      <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="currentPage = 1" placeholder="Cari unit atau lokasi..." />
     </div>
   </div>
 
@@ -45,14 +40,14 @@
       class="filter-chip"
       *ngFor="let f of filterList"
       [class.active]="filterAktif === f.value"
-      (click)="filterAktif = f.value"
+      (click)="filterAktif = f.value; currentPage = 1"
     >
       {{ f.label }}
     </div>
   </div>
 
   <div class="unit-list">
-    <div class="unit-card" *ngFor="let unit of getFilteredUnit()">
+    <div class="unit-card" *ngFor="let unit of getPaginatedUnit()">
 
       <div class="unit-img-wrap">
         <img [src]="unit.gambar" [alt]="unit.nama" class="unit-img" />
@@ -92,6 +87,23 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- Pagination UI -->
+    <div class="pagination-container" *ngIf="getFilteredUnit().length > pageSize">
+      <button class="btn-page" [disabled]="currentPage === 1" (click)="prevPage()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      
+      <span class="page-info">Halaman <strong>{{ currentPage }}</strong> dari {{ totalPages }}</span>
+
+      <button class="btn-page" [disabled]="currentPage === totalPages" (click)="nextPage()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
     </div>
 
     <div class="empty-search" *ngIf="getFilteredUnit().length === 0">

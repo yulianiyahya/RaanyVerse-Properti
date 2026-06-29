@@ -75,6 +75,36 @@ export class PesananPage implements OnInit {
     return this.daftarPesanan.filter(p => p.status === this.filterAktif);
   }
 
+  lihatDetail(unitId: number) {
+    if (this.isLoading) return;
+    this.isLoading = true;
+    this.api.getUnitDetail(unitId).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        const mappedUnit = {
+          id: res.id,
+          nama: res.name,
+          harga: res.price,
+          status: res.status === 'available' ? 'tersedia' : (res.status === 'occupied' ? 'disewa' : (res.status === 'maintenance' ? 'perawatan' : res.status)),
+          tipe: res.type,
+          gambar: this.api.formatImageUrl(res.image),
+          blok: res.blok || '',
+          nomor_unit: res.nomor_unit || '',
+          property_type: res.property_type || '',
+          lokasi: res.estate?.address || res.estate?.name || 'Lokasi tidak diketahui',
+          has_pending_booking: res.has_pending_booking || false,
+        };
+        localStorage.setItem('selectedUnit', JSON.stringify(mappedUnit));
+        this.router.navigate(['/detail-unit']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Gagal mengambil detail unit:', err);
+        alert('Gagal memuat detail unit.');
+      }
+    });
+  }
+
   batalPesanan(id: number) {
     if (this.isLoading) return;
     if (!confirm('Yakin ingin membatalkan pesanan ini? Hanya pesanan yang masih menunggu yang bisa dibatalkan.')) return;

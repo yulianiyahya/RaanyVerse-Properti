@@ -55,6 +55,9 @@
           <div class="tagihan-left">
             <p class="tagihan-nama">{{ item.nama }}</p>
             <p class="tagihan-periode">{{ item.periode }}</p>
+            <p class="tagihan-periode" *ngIf="item.adminFee > 0" style="font-size: 10px; color: #9E8878;">
+              Biaya Admin: Rp {{ item.adminFee | number:'1.0-0' }}
+            </p>
           </div>
           <div class="tagihan-right">
             <span class="tagihan-nominal">Rp {{ item.nominal | number:'1.0-0' }}</span>

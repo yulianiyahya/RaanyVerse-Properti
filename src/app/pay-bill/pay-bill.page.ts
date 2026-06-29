@@ -53,15 +53,18 @@ export class PayBillPage implements OnInit {
         if (res && res.length > 0) {
           this.punyaUnit = true;
           this.rincianTagihan = res.map((b: any) => {
-            const statusLabel = b.status === 'paid' ? 'LUNAS' : (b.status === 'pending' ? 'PENDING' : 'BELUM BAYAR');
-            const statusClass = b.status === 'paid' ? 'lunas' : (b.status === 'pending' ? 'proses' : 'belum');
-            const fine = b.fine_amount || 0;
+            const statusLabel = b.status === 'paid' ? 'LUNAS' : (b.status === 'pending' ? 'PENDING' : (b.status === 'overdue' ? 'JATUH TEMPO' : 'BELUM BAYAR'));
+            const statusClass = b.status === 'paid' ? 'lunas' : (b.status === 'pending' ? 'proses' : (b.status === 'overdue' ? 'overdue' : 'belum'));
+            const fine = Number(b.fine_amount) || 0;
+            const amount = Number(b.amount) || 0;
+            const adminFee = Number(b.admin_fee) || 0;
             const periodLabel = fine > 0 ? `${b.period} (Termasuk Denda: Rp ${fine.toLocaleString('id-ID')})` : b.period;
             return {
               id: b.id,
               nama: b.unit?.name || 'Sewa Unit',
               periode: periodLabel,
-              nominal: (b.amount || 0) + fine,
+              nominal: amount + fine,
+              adminFee: adminFee,
               status: statusClass,
               statusLabel: statusLabel,
               rawStatus: b.status

@@ -150,6 +150,16 @@ ion-header {
           background: #E8F5E9;
           color: #4CAF50;
         }
+
+        &.overdue {
+          background: #FDECEA;
+          color: #D32F2F;
+        }
+
+        &.proses {
+          background: #E3F2FD;
+          color: #1565C0;
+        }
       }
 
       .btn-download {

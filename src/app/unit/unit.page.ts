@@ -16,6 +16,8 @@ export class UnitPage implements OnInit {
   searchQuery: string = '';
   filterAktif: string = 'semua';
   menuOpen: boolean = false;
+  currentPage: number = 1;
+  pageSize: number = 5;
 
   filterList = [
     { value: 'semua', label: 'Semua' },
@@ -91,7 +93,11 @@ export class UnitPage implements OnInit {
   logout() {
     this.menuOpen = false;
     this.api.logoutGoogle();
+    const hasSeenOnboarding = localStorage.getItem('has_seen_onboarding');
     localStorage.clear();
+    if (hasSeenOnboarding) {
+      localStorage.setItem('has_seen_onboarding', hasSeenOnboarding);
+    }
     this.router.navigate(['/login']);
   }
 
@@ -109,6 +115,37 @@ export class UnitPage implements OnInit {
         u.lokasi.toLowerCase().includes(this.searchQuery.toLowerCase());
       return matchFilter && matchSearch;
     });
+  }
+
+  get totalPages(): number {
+    const filteredCount = this.getFilteredUnit().length;
+    return Math.ceil(filteredCount / this.pageSize) || 1;
+  }
+
+  getPaginatedUnit() {
+    const filtered = this.getFilteredUnit();
+    const maxPage = this.totalPages;
+    if (this.currentPage > maxPage) {
+      this.currentPage = maxPage;
+    }
+    if (this.currentPage < 1) {
+      this.currentPage = 1;
+    }
+    
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return filtered.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
   }
 
   lihatDetail(unit: any) {

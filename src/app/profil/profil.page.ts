@@ -8,6 +8,8 @@ import { ToastController } from '@ionic/angular';
 import { Capacitor } from '@capacitor/core';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 
+declare var google: any;
+
 @Component({
   selector: 'app-profil',
   templateUrl: './profil.page.html',
@@ -205,11 +207,19 @@ export class ProfilPage implements OnInit {
     this.api.logoutGoogle();
     this.api.logout().subscribe({
       next: () => {
+        const hasSeenOnboarding = localStorage.getItem('has_seen_onboarding');
         localStorage.clear();
+        if (hasSeenOnboarding) {
+          localStorage.setItem('has_seen_onboarding', hasSeenOnboarding);
+        }
         this.router.navigate(['/login']);
       },
       error: () => {
+        const hasSeenOnboarding = localStorage.getItem('has_seen_onboarding');
         localStorage.clear();
+        if (hasSeenOnboarding) {
+          localStorage.setItem('has_seen_onboarding', hasSeenOnboarding);
+        }
         this.router.navigate(['/login']);
       }
     });
@@ -233,7 +243,7 @@ export class ProfilPage implements OnInit {
       }
 
       const idToken = googleUser.authentication?.idToken || '';
-      
+
       if (!idToken) {
         throw new Error('Google ID Token tidak ditemukan.');
       }

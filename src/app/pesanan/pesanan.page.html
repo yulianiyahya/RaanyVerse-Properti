@@ -3,17 +3,11 @@
     <div class="header-left">
       <span class="header-title">Pemesanan Saya</span>
     </div>
-    <div class="header-right" (click)="goToNotifikasi()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
-        fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-      </svg>
-    </div>
+    <div class="header-right"></div>
   </div>
 </ion-header>
 
-<ion-content class="pesanan-content" scrollY="true">
+<ion-content class="pesanan-content" scrollY="true" fullscreen="true">
 
   <!-- Filter Tab -->
   <div class="filter-scroll">
@@ -48,7 +42,7 @@
   <div class="pesanan-list" *ngIf="getFiltered().length > 0">
 
     <!-- Pesanan Card -->
-    <div class="pesanan-card" *ngFor="let p of getFiltered()">
+    <div class="pesanan-card" *ngFor="let p of getFiltered()" (click)="lihatDetail(p.unitId)" style="cursor: pointer;">
 
       <div class="card-left">
         <img [src]="p.gambar" [alt]="p.nama" class="card-img" />
@@ -72,19 +66,19 @@
           <button
             *ngIf="p.status === 'menunggu'"
             class="btn-batal"
-            (click)="batalPesanan(p.id)"
+            (click)="batalPesanan(p.id); $event.stopPropagation()"
             [disabled]="isLoading"
           >
             Batalkan
           </button>
-          <div *ngIf="p.status === 'disetujui'" style="display: flex; gap: 8px; align-items: center;">
+          <div *ngIf="p.status === 'disetujui'" style="display: flex; gap: 8px; align-items: center;" (click)="$event.stopPropagation()">
             <span class="info-disetujui">✓ Pesanan diterima</span>
-            <button class="btn-sync" (click)="syncKalender(p.id)" [disabled]="p.isSynced || isLoading" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid #10b981; background: #d1fae5; color: #065f46; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+            <button class="btn-sync" (click)="syncKalender(p.id); $event.stopPropagation()" [disabled]="p.isSynced || isLoading" style="font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid #10b981; background: #d1fae5; color: #065f46; cursor: pointer; display: flex; align-items: center; gap: 4px;">
               <ion-icon name="calendar-outline"></ion-icon>
               <span>{{ p.isSynced ? 'Synced' : 'Sync Calendar' }}</span>
             </button>
           </div>
-          <span *ngIf="p.status === 'ditolak'" class="info-ditolak">✗ Pesanan ditolak</span>
+          <span *ngIf="p.status === 'ditolak'" class="info-ditolak" (click)="$event.stopPropagation()">✗ Pesanan ditolak</span>
         </div>
       </div>
 

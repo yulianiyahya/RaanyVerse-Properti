@@ -36,8 +36,8 @@ export class FormPemesananPage implements OnInit {
     const data = localStorage.getItem('selectedUnit');
     this.unit = data ? JSON.parse(data) : null;
 
-    if (this.unit && this.unit.has_pending_booking) {
-      alert('Unit tidak bisa dipesan karena ada permintaan sewa/pembelian yang belum di-approve oleh admin.');
+    if (this.unit && (this.unit.has_pending_booking || this.unit.status === 'perawatan')) {
+      alert('Unit tidak bisa dipesan karena sedang dalam perawatan atau ada permintaan sewa/pembelian yang belum di-approve oleh admin.');
       this.location.back();
       return;
     }
@@ -73,8 +73,8 @@ export class FormPemesananPage implements OnInit {
           };
           localStorage.setItem('selectedUnit', JSON.stringify(this.unit));
 
-          if (this.unit.has_pending_booking) {
-            alert('Unit tidak bisa dipesan karena ada permintaan sewa/pembelian yang belum di-approve oleh admin.');
+          if (this.unit.has_pending_booking || this.unit.status === 'perawatan') {
+            alert('Unit tidak bisa dipesan karena sedang dalam perawatan atau ada permintaan sewa/pembelian yang belum di-approve oleh admin.');
             this.location.back();
             return;
           }
@@ -179,8 +179,8 @@ export class FormPemesananPage implements OnInit {
 
   submitPesanan() {
     if (this.isLoading) return;
-    if (this.unit?.has_pending_booking) {
-      alert('Unit tidak bisa dipesan karena ada permintaan sewa/pembelian yang belum di-approve oleh admin.');
+    if (this.unit?.has_pending_booking || this.unit?.status === 'perawatan') {
+      alert('Unit tidak bisa dipesan karena sedang dalam perawatan atau ada permintaan sewa/pembelian yang belum di-approve oleh admin.');
       this.location.back();
       return;
     }

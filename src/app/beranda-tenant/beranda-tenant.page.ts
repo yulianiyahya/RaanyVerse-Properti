@@ -73,7 +73,6 @@ export class BerandaTenantPage implements OnInit {
       }
     });
 
-    // Ambil riwayat aktivitas dari backend
     this.api.getHistory().subscribe({
       next: (res: any) => {
         this.aktivitasList = (res || []).map((act: any) => {
@@ -93,6 +92,52 @@ export class BerandaTenantPage implements OnInit {
             tipe = 'payment';
           }
           
+          const descLower = (act.description || '').toLowerCase();
+          const actionLower = (act.action || '').toLowerCase();
+          const dynamicStatus = act.dynamic_status;
+          
+          let status = 'proses';
+          let statusLabel = 'Terkirim';
+
+          if (dynamicStatus) {
+            if (dynamicStatus === 'completed' || dynamicStatus === 'success') {
+              status = 'selesai';
+              statusLabel = 'Selesai';
+            } else if (dynamicStatus === 'approved') {
+              status = 'lunas';
+              statusLabel = 'Disetujui';
+            } else if (dynamicStatus === 'rejected') {
+              status = 'ditolak';
+              statusLabel = 'Ditolak';
+            } else if (dynamicStatus === 'cancelled') {
+              status = 'ditolak';
+              statusLabel = 'Batal';
+            } else if (dynamicStatus === 'pending') {
+              status = 'proses';
+              statusLabel = 'Diproses';
+            }
+          } else {
+            if (actionLower.includes('closed') || actionLower.includes('complete') || descLower.includes('to completed')) {
+              status = 'selesai';
+              statusLabel = 'Selesai';
+            } else if (actionLower.includes('approve') || descLower.includes('to approved')) {
+              status = 'lunas';
+              statusLabel = 'Disetujui';
+            } else if (actionLower.includes('reject') || descLower.includes('to rejected')) {
+              status = 'ditolak';
+              statusLabel = 'Ditolak';
+            } else if (actionLower.includes('cancel') || actionLower.includes('cancelled')) {
+              status = 'ditolak';
+              statusLabel = 'Batal';
+            } else if (actionLower.includes('submitted') || actionLower.includes('created')) {
+              status = 'proses';
+              statusLabel = 'Terkirim';
+            } else if (actionLower.includes('sync')) {
+              status = 'lunas';
+              statusLabel = 'Sukses';
+            }
+          }
+
           return {
             judul: act.action || 'Aktivitas',
             deskripsi: act.description || '',
@@ -100,7 +145,9 @@ export class BerandaTenantPage implements OnInit {
               day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
             }),
             tipe: tipe,
-            icon: icon
+            icon: icon,
+            status: status,
+            statusLabel: statusLabel
           };
         }).slice(0, 5); // Tampilkan 5 terbaru di beranda
       },

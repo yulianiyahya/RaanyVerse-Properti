@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { guestGuard } from './guards/guest.guard';
 
+import { welcomeGuard } from './guards/welcome.guard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -10,7 +12,8 @@ export const routes: Routes = [
   },
   {
     path: 'welcome',
-    loadComponent: () => import('./welcome/welcome.page').then(m => m.WelcomePage)
+    loadComponent: () => import('./welcome/welcome.page').then(m => m.WelcomePage),
+    canActivate: [welcomeGuard]
   },
   {
     path: 'privacy-policy',
